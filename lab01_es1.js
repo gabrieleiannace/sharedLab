@@ -32,7 +32,7 @@ function FilmLibrary(){
         });
     }
     this.getRated= function(){
-        return this.library.filter(f=>f.score!==undefined)
+        return this.library.filter(f=>f.score!==undefined).sort((f1,f2)=>f1.score<f2.score);
     }
 }
 let filmLib= new FilmLibrary();
