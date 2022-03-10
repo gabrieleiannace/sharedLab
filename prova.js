@@ -1,3 +1,4 @@
 "use strict";
 
-let prova = 0;
+let a_s =  Array.of("pippo","pluto","paperino");
+
