@@ -37,13 +37,13 @@ function CreateFilmLibrary(){
     }
 
     this.getRated = () =>{
-        const filtered_lib = this.library.filter((film) => film.rate != undefined);
-        filtered_lib.sort((a,b) => a.rate-b.rate);
+        const filtered_lib = this.library.filter((film) => film.rating != undefined);
+        filtered_lib.sort((a,b) => a.rating-b.rating);
         return filtered_lib;
     } 
 }
 
-const film0 = new Film(1, 'il fumo uccide', true, 1, 2);
+const film0 = new Film(1, 'il fumo uccide', true, 1);
 const film1 = new Film(2, 'tre uomini ed una gamba', true, 1, 1);
 const film2 = new Film(3, 'non aprire quella porta', true, 1, 4);
 const film3 = new Film(4, 'Shrek', false, 1, 4);
