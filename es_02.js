@@ -60,4 +60,4 @@ console.log(library)
 
 console.log('................................')
 const scored = library.getRated()
-console.log(scored);
+console.log(scored);  
