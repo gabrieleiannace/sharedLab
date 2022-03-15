@@ -8,15 +8,14 @@ function Film(id, title, fav = false, date, rating){
     this.fav = fav;
     this.date = date;
     this.rating = rating;
+    // this.str = function() { return `${this.id}, ${this.title}, ${this.rate}, ${this.date.format()}` }
 }
 
 function filmLibrary(){
     this.library = [];
 
     this.addNewFilm = (...films) => {
-        for(const film of films){
-            this.library.push(film);
-        }
+        for(const film of films) this.library.push(film);
     }
 }
 
