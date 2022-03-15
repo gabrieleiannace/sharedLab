@@ -8,7 +8,8 @@ Write some test instructions that call the function with a variety of strings an
 correctness. */
 
 "use strict";
-const words = ['spring', 'it', 'cat'];
+const words = ['i', 'spring', 'it', 'cat'];
 for(const word of words){
-    console.log(word.slice(0, 2) + word.slice(-2));
+    if(word.length > 1) console.log(word.slice(0, 2) + word.slice(-2));
+    else console.log('');
 }
