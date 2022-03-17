@@ -2,14 +2,13 @@
   "name": "lab2",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "lab3_es1.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dayjs": "^1.11.0",
-    "sqlite3": "^5.0.2"
+    "dayjs": "^1.11.0"
   }
 }
