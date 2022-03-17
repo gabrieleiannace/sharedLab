@@ -117,6 +117,20 @@ function FilmLibrary() {
         })
       })
   }
+
+  this.getWatchedToday = async () => {
+    const today = dayjs().format('YYYY-MM-DD');
+    return new Promise((resolve, reject) => {
+      db.all("select * from films where watchdate=?",[today], (err, rows) =>{
+        if(err)
+          reject(err);
+        else{
+          console.log(rows);
+          resolve(rows);
+        }
+      })
+    })
+}
 }
 
 
@@ -165,7 +179,10 @@ async function main() {
 
     f_array = await library.getFavorites();
 
-    
+    console.log('***********************');
+
+    await library.getWatchedToday();
+
     db.close();
 }
 
