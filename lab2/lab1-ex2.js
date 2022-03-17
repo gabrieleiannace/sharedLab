@@ -6,6 +6,10 @@
 
 'use strict';
 const dayjs = require("dayjs");
+const sqlite = require("sqlite3");
+
+//variabile globale del database
+const db = new sqlite.Database('films.db', (err) => { if (err) throw err;});
 
 // internationalization (i18n) 
 const localizedFormat = require('dayjs/plugin/localizedFormat');
@@ -85,10 +89,38 @@ function FilmLibrary() {
     });
     return new_array;
   }
+
+  //Get all the films stored in the database and return (a Promise that resolves to) an array of Film objects
+  this.getAll = async function getAll(){
+    return new Promise((resolve, reject) => {
+      db.all('SELECT * FROM films', (err, rows) =>{
+        if(err)
+          reject(err);
+        else{
+          console.log(rows);
+          resolve(rows);
+        }
+      })
+    })
+  }
+
+  //Get all the favorite films stored in the database and return (a Promise that resolves to) an array of Film objects.
+  this.getFavorites = async () => {
+      return new Promise((resolve, reject) => {
+        db.all('select * from films where favorite=1', (err, rows) =>{
+          if(err)
+            reject(err);
+          else{
+            console.log(rows);
+            resolve(rows);
+          }
+        })
+      })
+  }
 }
 
 
-function main() {
+async function main() {
   // Creating some film entries
   const f1 = new Film(1, "Pulp Fiction", true, "2022-03-10", 5);
   const f2 = new Film(2, "21 Grams", true, "2022-03-17", 4);
@@ -125,6 +157,16 @@ function main() {
 
   // Additional instruction to enable debug 
   debugger;
+
+  //Immediately invoked function
+    let f_array = await library.getAll();
+
+    console.log('***********************');
+
+    f_array = await library.getFavorites();
+
+    
+    db.close();
 }
 
 main();
