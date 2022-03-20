@@ -119,20 +119,21 @@ function FilmLibrary() {
   }
 
   this.getWatchedToday = async () => {
-    const today = dayjs().format('YYYY-MM-DD');
+    //const today = dayjs().format('YYYY-MM-DD');
+    const today = '2022-03-17';
     return new Promise((resolve, reject) => {
       db.all("select * from films where watchdate=?",[today], (err, rows) =>{
         if(err)
           reject(err);
         else{
-          console.log(rows);
+          //console.log(rows);
           resolve(rows);
+          return rows.map(x => new Film(x.id, x.title, x.favorite, x.watchDate, x.rating));
         }
       })
     })
 }
 }
-
 
 async function main() {
   // Creating some film entries
@@ -181,7 +182,7 @@ async function main() {
 
     console.log('***********************');
 
-    await library.getWatchedToday();
+    const x = await library.getWatchedToday().then( x => console.log(x));
 
     db.close();
 }
