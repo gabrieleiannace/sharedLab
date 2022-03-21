@@ -16,7 +16,6 @@ function Film(id, title, isFavorite = false, watchDate = '', rating = 0) {
   this.title = title;
   this.favorite = isFavorite;
   this.rating = rating;
-  // saved as dayjs object
   this.watchDate = watchDate && dayjs(watchDate);
 
   this.toString = () => {
@@ -82,27 +81,164 @@ function FilmLibrary() {
     return new_array;
   }
 
-  this.getAll = async () => {
+  this.getAll = () => {
     return new Promise((resolve, reject) => {
-        const db = new sqlite.Database('films.db', (err) => { if (err) throw err; });
-
-        db.all('SELECT * FROM FILMS', (err, rows) => {
-            if(err) reject(err);
-            else {
-                console.log(rows);
-                resolve(rows);
-            }
-        });
+      const db = new sqlite.Database('films.db', (err) => { if (err) throw err; });
+      const query = 'SELECT * FROM FILMS'
+      db.all(query, [], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        else {
+          resolve(rows);
+        }
+      });
+      db.close();
     });
+  }
 
-  
+  this.getFavorites = () => {
+    return new Promise((resolve, reject) => {
+      const db = new sqlite.Database('films.db', (err) => { if (err) throw err; });
+      const query = 'SELECT * FROM FILMS WHERE FAVORITE = 1';
+      db.all(query, [], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        else {
+          resolve(rows);
+        }
+      });
+      db.close();
+    })
+  }
+
+  this.getWatchedToday = () => {
+    return new Promise((resolve, reject) => {
+      const db = new sqlite.Database('films.db', (err) => { if (err) throw err });
+      const query = 'SELECT * FROM FILMS WHERE WATCHDATE = ?';
+      db.all(query, [dayjs().format('YYYY-MM-DD')], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        else {
+          if (rows.length == 0) resolve('Nothing to show');
+          const films = rows.map(record => new Film(record.id, record.title,
+            record.favorite, record.watchdate, record.rating));
+          resolve(films);
+        }
+      })
+    })
+  }
+
+  this.getBeforeDate = (inputDate) => {
+    return new Promise((resolve, reject) => {
+      const db = new sqlite.Database('films.db', (err) => { if (err) throw err });
+      const query = 'SELECT * FROM FILMS WHERE WATCHDATE <= ?';
+      db.all(query, [inputDate], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        else {
+          resolve(rows);
+        }
+      })
+    })
+  }
+
+  this.getGreaterThanRating = (inputRating) => {
+    return new Promise((resolve, reject) => {
+      const db = new sqlite.Database('films.db', (err) => { if (err) throw err });
+      const query = 'SELECT * FROM FILMS WHERE RATING >= ?';
+      db.all(query, [inputRating], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        else {
+          const films = rows.map(record => new Film(record.id, record.title,
+            record.favorite, record.watchdate, record.rating));
+          resolve(films);
+        }
+      })
+    })
+  }
+
+  this.getByTitle = (inputTitle) => {
+    return new Promise((resolve, reject) => {
+      const db = new sqlite.Database('films.db', (err) => { if (err) throw err });
+      const query = 'SELECT * FROM FILMS WHERE TITLE = ?';
+      db.all(query, [inputTitle], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        else {
+          const films = rows.map(record => new Film(record.id, record.title,
+            record.favorite, record.watchdate, record.rating));
+          resolve(films);
+        }
+      })
+    })
+  }
+
+  this.store = (title, favorite, watchdate, rating) => {
+    return new Promise((resolve, reject) => {
+      const db = new sqlite.Database('films.db', (err) => { if (err) throw err });
+      const query = 'INSERT INTO FILMS(title, favorite, watchdate, rating) VALUES (?, ?, ?, ?);';
+      db.run(query, [title, favorite, dayjs(watchdate), rating], (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        else {
+          resolve("Success");
+        }
+      })
+      db.close()
+    })
+  }
+
+  this.deleteById = (id) => {
+    return new Promise((resolve, reject) => {
+      const db = new sqlite.Database('films.db', (err) => { if (err) throw err });
+      const query = 'DELETE FROM FILMS WHERE ID = ?;';
+      db.run(query, [id], (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        else {
+          resolve("Success");
+        }
+      })
+    })
+  }
+
+  this.resetWatchdate = () => {
+    return new Promise((resolve, reject) => {
+      const db = new sqlite.Database('films.db', (err) => { if (err) throw err });
+      const query = "UPDATE FILMS SET WATCHDATE = ''";
+      db.run(query, [], (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        else {
+          resolve("Success");
+        }
+      })
+      db.close();
+    })
+  }
+
 }
 
-
-}
-
-
-function main() {
+async function main() {
   // Creating some film entries
   const f1 = new Film(1, "Pulp Fiction", true, "2022-03-10", 5);
   const f2 = new Film(2, "21 Grams", true, "2022-03-17", 4);
@@ -119,36 +255,40 @@ function main() {
   library.addNewFilm(f5);
 
   // Print Sorted films
-  console.log("***** List of Films sorted by watchDate *****");
-  const sorted_films = library.sortByDate();
-  sorted_films.forEach((film) => console.log(film.toString()));
+  // console.log("***** List of Films sorted by watchDate *****");
+  // const sorted_films = library.sortByDate();
+  // sorted_films.forEach((film) => console.log(film.toString()));
 
   // Deleting film #3
-  library.deleteFilm(3);
+  // library.deleteFilm(3);
 
   // Reset dates
-  library.resetWatchedFilms();
+  // library.resetWatchedFilms();
 
   // Printing modified Library
-  library.print();
+  // library.print();
 
   // Retrieve and print films with an assigned rating
-  console.log("***** Films filtered, only the rated ones *****");
-  const rated_films = library.getRated();
-  rated_films.forEach((film) => console.log(film.toString()));
+  // console.log("***** Films filtered, only the rated ones *****");
+  // const rated_films = library.getRated();
+  // rated_films.forEach((film) => console.log(film.toString()));
 
-  // Additional instruction to enable debug 
-  debugger;
+  // // Additional instruction to enable debug 
+  // debugger;
+  // await library.getAll().then(value => console.log(value));
+
+  // await library.getFavorites().then(value => console.log(value));
+  // await library.getWatchedToday().then(value => console.log(value));
+  // await library.getBeforeDate("2022-03-21").then(value => console.log(value));
+  // await library.getGreaterThanRating(3).then(value => console.log(value));
+  // await library.getByTitle("Star Wars").then(value => console.log(value));
+
+  // Resolve: DB does not update
+  await library.store("Hunger Games", 1, "2022-03-21", 4).then(value => console.log(value));
+  await library.deleteById(23).then(value => console.log(value));
+  await library.resetWatchdate().then(value => console.log(value));
+
 }
 
 main();
 
-
-// non dimenticare await !!!
-const films = await FilmLibrary.getAll()
-
-// usare ?
-this.getToday = (watchdate) => {
-
-    const query = 'select * from films where watchdate = ?'
-}
