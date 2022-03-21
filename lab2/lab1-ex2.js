@@ -133,6 +133,20 @@ function FilmLibrary() {
       })
     })
 }
+this.getWatchedOnDate = async (date) => {
+  return new Promise((resolve, reject) => {
+    db.all("select * from films where watchdate=?",[date], (err, rows) =>{
+      if(err)
+        reject(err);
+      else{
+        //console.log(rows);
+        resolve(rows);
+        return rows.map(x => new Film(x.id, x.title, x.favorite, x.watchDate, x.rating));
+      }
+    })
+  })
+}
+
 }
 
 async function main() {
@@ -182,7 +196,7 @@ async function main() {
 
     console.log('***********************');
 
-    const x = await library.getWatchedToday().then( x => console.log(x));
+    await library.getWatchedToday().then( x => console.log(x));
 
     db.close();
 }
