@@ -175,6 +175,20 @@ function FilmLibrary() {
       })
     })
   }
+
+
+  this.storeFilm = async (film) => {
+    return new Promise((resolve, reject) => {
+      db.run("INSERT INTO films(id, title, favorite, watchdate, rating) values(?,?,?,?,?)", [film.id, film.title, film.favorite, film.watchDate, film.rate], err =>{
+        if(err){
+          reject('errore');
+        }
+        else {
+          resolve('success');
+        }
+      })
+    });
+  }
 }
 
 async function main() {
@@ -216,17 +230,27 @@ async function main() {
   debugger;
 
   //Immediately invoked function
-    let f_array = await library.getAll();
+  let f_array = await library.getAll();
 
-    console.log('***********************');
+  console.log('***********************');
 
-    f_array = await library.getFavorites();
+  f_array = await library.getFavorites();
 
-    console.log('***********************');
+  console.log('***********************');
 
-    await library.getWatchedToday().then( x => console.log(x));
+  await library.getWatchedToday().then(x => console.log(x));
 
-    db.close();
+  console.log('***********************');
+
+  const insert_film = new Film(7, "Cado dalle Nubi", true, "2022-03-17", 4);
+  try{
+  await library.storeFilm(insert_film).then((x) => console.log(x));
+  }catch(error){
+    console.log(error);
+  }
+
+  db.close();
+
 }
 
 main();
