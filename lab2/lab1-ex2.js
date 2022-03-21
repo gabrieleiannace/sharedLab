@@ -119,8 +119,8 @@ function FilmLibrary() {
   }
 
   this.getWatchedToday = async () => {
-    //const today = dayjs().format('YYYY-MM-DD');
-    const today = '2022-03-17';
+    const today = dayjs().format('YYYY-MM-DD');
+    //const today = '2022-03-17';
     return new Promise((resolve, reject) => {
       db.all("select * from films where watchdate=?",[today], (err, rows) =>{
         if(err)
