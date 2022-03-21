@@ -133,20 +133,48 @@ function FilmLibrary() {
       })
     })
 }
-this.getWatchedOnDate = async (date) => {
-  return new Promise((resolve, reject) => {
-    db.all("select * from films where watchdate=?",[date], (err, rows) =>{
-      if(err)
-        reject(err);
-      else{
-        //console.log(rows);
-        resolve(rows);
-        return rows.map(x => new Film(x.id, x.title, x.favorite, x.watchDate, x.rating));
-      }
+  this.getFilmByDate = async (date) => {
+    return new Promise((resolve, reject) => {
+      db.all("select * from films where watchdate=?",[date], (err, rows) =>{
+        if(err)
+          reject(err);
+        else{
+          //console.log(rows);
+          resolve(rows);
+          return rows.map(x => new Film(x.id, x.title, x.favorite, x.watchDate, x.rating));
+        }
+      })
     })
-  })
-}
+  }
 
+
+  this.getFilmByRate = async (rate) => {
+    return new Promise((resolve, reject) => {
+      db.all("select * from films where rate=?",[rate], (err, rows) =>{
+        if(err)
+          reject(err);
+        else{
+          //console.log(rows);
+          resolve(rows);
+          return rows.map(x => new Film(x.id, x.title, x.favorite, x.watchDate, x.rating));
+        }
+      })
+    })
+  }
+
+  this.getFilmByTitle = async (titile) => {
+    return new Promise((resolve, reject) => {
+      db.all("select * from films where titile=?",[title], (err, rows) =>{
+        if(err)
+          reject(err);
+        else{
+          //console.log(rows);
+          resolve(rows);
+          return rows.map(x => new Film(x.id, x.title, x.favorite, x.watchDate, x.rating));
+        }
+      })
+    })
+  }
 }
 
 async function main() {
