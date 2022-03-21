@@ -287,6 +287,7 @@ async function main() {
   await library.store("Hunger Games", 1, "2022-03-21", 4).then(value => console.log(value));
   await library.deleteById(23).then(value => console.log(value));
   await library.resetWatchdate().then(value => console.log(value));
+  
 }
 
 main();
