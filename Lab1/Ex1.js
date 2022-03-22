@@ -2,7 +2,7 @@
 
 //devo stampare i primi due e gli ultimi due caratteri
 
-let s = ['pippo', 'primavera', 'spring', 'tavolino', 'a', 'sim', 'tt']; //mi creo un array
+let s = ['pippo', 'primavera', 'spring', 'tavolino', 'a', 'sim', 'it']; //mi creo un array
 
 
 //arrow function
@@ -26,6 +26,3 @@ const fn = (as) => {
 
 s = fn(s);
 console.log(s);
-
-
-
