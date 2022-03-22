@@ -85,12 +85,12 @@ function FilmLibrary() {
   this.getAllFilm_DB = () => {
       const sql = "SELECT * from films";
       let film_result=[];
-      return new Promise ((resolve,reject)=>
+      return new Promise ((resolve)=>//NOTA: non c'è il "reject"
       {
         db.all(sql,(err,rows)=>{
           if (err){
-            reject(err);
-            return;}
+            throw err; //questo blocca totalmente l'esecuzione in caso di errore!
+            }
           for (const film of rows)
           {
             //const film = new Film(row.id,row.title,row.isFavorite,row.watchDate,row.rating);
@@ -103,11 +103,11 @@ function FilmLibrary() {
   this.getFavoriteFilm_DB = () => {
       const sql = "SELECT * FROM films WHERE favorite=1";
       let film_result=[];
-      return new Promise ((resolve,reject)=>
+      return new Promise ((resolve,reject)=>//nota: c'è il reject
       {
         db.all(sql,(err,rows)=>{
           if (err){
-            reject(err);
+            reject(err); //in caso di errore, l'esecuzione non è bloccata e il catch della funzione dostuff viene eseguito
             return;}
           for (const film of rows)
           {
@@ -123,7 +123,6 @@ function FilmLibrary() {
     let film_result=[];
     return new Promise ((resolve,reject)=>
     {
-      if (true) {
         const date_format = date.format("YYYY-MM-DD");
         db.all(sql,date_format,(err,rows)=>{
           if (err){
@@ -136,10 +135,32 @@ function FilmLibrary() {
           }
           resolve(film_result);
         });
-      }else reject("Error: not a date");
     });
 }
 }
+
+async function dostuff(library)
+{
+  let films_array= [];
+  try { //posso non mettere il try-catch, ma nel caso di errore l'esecuzione verrà fermata
+  films_array = await library.getAllFilm_DB();
+  console.log("***** List of ALL Films *****");
+  console.log(films_array);
+  films_array = await library.getFavoriteFilm_DB();
+  console.log("***** List of FAV Films *****");
+  console.log(films_array);
+  films_array = await library.getWatchedTodayFilm_DB(dayjs());
+  console.log("***** List of TODAY Films *****");
+  console.log(films_array);
+  }catch(e){console.log(e);}
+  console.log("NON HO SBATTA DI FARE IL RESTO!");
+  /*
+  SKIPPO LE ALTRE FUNZIONI DELL'ESERCIZIO 1 e 2
+  PERCHè SONO UGUALI MA CAMBIA SOLO LA QUERY
+  E NON HO SBATTA DI FARLE
+  */
+}
+
 
 
 function main() {
@@ -158,6 +179,9 @@ function main() {
   library.addNewFilm(f4);
   library.addNewFilm(f5);
 
+  dostuff(library);
+
+  /* METODO DIRETTO CON LE PROMISE
   library.getAllFilm_DB().then((films)=>{
     console.log("***** List of ALL Films *****");
     console.log(films);
@@ -170,6 +194,7 @@ function main() {
     console.log("***** List of TODAY Films *****");
     console.log(films);
   }).catch((err)=>console.log(err));
+  */
   // Additional instruction to enable debug 
   debugger;
 }
