@@ -1,16 +1,16 @@
 'use strict'
 
 const dayjs = require('dayjs')
-// internationalization (i18n) 
-const localizedFormat = require('dayjs/plugin/localizedFormat');
-dayjs.extend(localizedFormat); // use shortcuts 'LL' for date in U.S. format
-/* locale
-  const locale_it = require('dayjs/locale/it');
-  dayjs.locale('it');
-*/
-//istanzio il database per il lab2
 const sqlite = require('sqlite3')
-const db = new sqlite.Database('films.db', (err) => { if (err) throw err; })
+
+
+
+const localizedFormat = require('dayjs/plugin/localizedFormat');
+dayjs.extend(localizedFormat);
+
+const db = new sqlite.Database('films.db',
+    (err) => { if (err) throw err; });
+
 
 function Film(id, title, favorite = false, date = '', rating = 0) {
     this.id = id;
@@ -44,8 +44,8 @@ function FilmLibrary() {
         //faccio il controllo del duplicato se esiste già non lo inserisco
         if (!this.film.some(f => f.id == e.id))
             this.film.push(e);
-        else
-            throw new Error('Duplicate ID')
+        //else
+        //throw new Error('Duplicate ID')
     }
 
     //lo faccio per stampare l'oggetto usando la funzione definita in Film
@@ -54,75 +54,157 @@ function FilmLibrary() {
         console.log(this.film.toString());
     }
 
-    //Ordinare i film per data 
-    this.sortByDate = () => {
-        let orderFilm = [...this.film].sort((a, b) => (a.date - b.date))
-        console.log("**** Films sorted by date")
-        console.log(orderFilm.toString())
+    this.getAll = () => {
+        let sql = 'select * from films';
+        return new Promise((resolve, reject) => {
+            db.all(sql, (err, rows) => {
+                if (err) {
+                    reject(err)
+                }
+                else {
+                    resolve(rows);
+                }
+            });
+        });
     }
 
-    //cancello il film con l'id passato come parametro
-    this.deleteFilm = (Id) => {
-        //const new_list = [...this.film].filter(a => a.id === Id)  //questa funzione mi ritorna il film cancellato non va bene perchè io voglio i film che non sono cancellati allora uso diverso
-        //in modo da mettere tutti gli elementi che non sono uguali al ID passato e metterli nel nuovo array
-        const new_list = [...this.film].filter(a => a.id !== Id)  //questa è la versione giusta
-        console.log("****Film deleted****")
-        console.log(new_list.toString())
+    this.getFavorite = () => {
+        let sql = 'select * from films where favorite = 1 ';
+        return new Promise((resolve, reject) => {
+            db.all(sql, (err, rows) => {
+                if (err) {
+                    reject(err)
+                }
+                else {
+                    resolve(rows);
+                }
+            });
+        });
     }
 
-    //deletes the Watch date of all the Films in the FilmLibrary
-    this.resetWatchedFilms = () => {
-        //mi faccio un ciclo for dove scorro tutto l'array e imposto il valore di date a striga vuota
-        for (let f of this.film)
-            f.date = ""
-        console.log("****Reset Watch Film****")
-        console.log(this.film.toString())
+    this.getWatchedToday = () => {
+        let today = dayjs(new Date()).format('YYYY-MM-DD')  //questo mi prende la data corrente
+        let sql = 'select * from films where watchdate = ? ';
+        return new Promise((resolve, reject) => {
+            db.all(sql, [today], (err, rows) => {
+                if (err) {
+                    reject(err)
+                }
+                else {
+                    resolve(rows);
+                }
+            });
+        });
+
     }
 
-    this.getRated = () => {
-        //seleziono tutti i film che hanno uno score
-        const only_rated = [...this.film].filter(a => a.rating != 0)
-        //ordinare questi film in base al rating decrescente usando l'array filtrato prima
-        only_rated.sort((a, b) => (b.rating - a.rating))
-        console.log("***** Films filtered, only the rated ones *****")
-        console.log(only_rated.toString())
+    this.getWatcheBeforeDate = (day) => {
+        //questo metodo mi restituisce i film visti prima di una data passata come parametro
+        let sql = 'select * from films where watchdate <= ? ';
+        return new Promise((resolve, reject) => {
+            db.all(sql, [day], (err, rows) => {
+                if (err) {
+                    reject(err)
+                }
+                else {
+                    resolve(rows);
+                }
+            });
+        });
+
     }
 
-    //----------------scrivo i metodi richiesti nel secondo lab partendo dalla soluzione mia 
-    //Nota : se i metodi di sopra non servono poi li cancello
+    this.getRatingGreaterToAParameter = (rat) => {
+        //questo metodo mi restituisce i film visti prima di una data passata come parametro
+        let sql = 'select * from films where rating >= ? ';
+        return new Promise((resolve, reject) => {
+            db.all(sql, [rat], (err, rows) => {
+                if (err) {
+                    reject(err)
+                }
+                else {
+                    resolve(rows);
+                }
+            });
+        });
 
+    }
+
+    this.getTitle = (tit) => {
+        //questo metodo mi restituisce i film visti prima di una data passata come parametro
+        let sql = 'select * from films where title = ? ';
+        return new Promise((resolve, reject) => {
+            db.all(sql, [tit], (err, rows) => {
+                if (err) {
+                    reject(err)
+                }
+                else {
+                    resolve(rows);
+                }
+            });
+        });
+
+    }
 
 
 }
 
 
-function main() {
-    //creo alcune istanze dei film
-    const f1 = new Film(1, "Pulp Fiction", true, "2022-03-10", 5);
-    const f2 = new Film(2, "21 Grams", true, "2022-03-17", 4);
-    const f3 = new Film(3, "Star Wars", false);
-    const f4 = new Film(4, "Matrix", false);
-    const f5 = new Film(5, "Shrek", false, "2022-03-21", 3);
-    //aggiungo i film alla libreria
+
+async function main() {
+
+    //aggiungo i film letti dal db alla libreria
     const library = new FilmLibrary();
-    library.addNewFilm(f1)
-    library.addNewFilm(f2)
-    library.addNewFilm(f3)
-    library.addNewFilm(f4)
-    library.addNewFilm(f5)
-    //stampo tutti i film presenti nella libreria
-    library.print();
-    //array ordinati per dati
-    library.sortByDate()
-    //cancello un film in base all'ID che passo
-    library.deleteFilm(3)
-    //resetto tutte le date dei film a not defined
-    library.resetWatchedFilms()
+    /*let only_film = await library.getAll()
+    for (let row of only_film) {
+        let nt = new Film(row.id, row.title, row.favorite, dayjs((row.watchdate)), row.rating);
+        library.addNewFilm(nt);
+    }
+    console.log(library.print())*/
 
-    library.getRated()
+    /*console.log("******** Favorite Films*******")
+    let favorite_film = await library.getFavorite()
+    for (let row of favorite_film) {
+        let nt = new Film(row.id, row.title, row.favorite, dayjs((row.watchdate)), row.rating);
+        library.addNewFilm(nt);
+    }
+    console.log(library.print())*/
+
+    /*console.log("******** Watched Films Today*******")
+    let favorite_film = await library.getWatchedToday()
+    for (let row of favorite_film) {
+        let nt = new Film(row.id, row.title, row.favorite, dayjs((row.watchdate)), row.rating);
+        library.addNewFilm(nt);
+    }
+    console.log(library.print())*/
+
+    /*console.log("******** Watched Films Today*******")
+    let favorite_film = await library.getWatcheBeforeDate('2022-03-15')
+    for (let row of favorite_film) {
+        let nt = new Film(row.id, row.title, row.favorite, dayjs((row.watchdate)), row.rating);
+        library.addNewFilm(nt);
+    }
+    console.log(library.print())*/
+
+    /*console.log("******** Watched Films Today*******")
+    let favorite_film = await library.getRatingGreaterToAParameter(4)
+    for (let row of favorite_film) {
+        let nt = new Film(row.id, row.title, row.favorite, dayjs((row.watchdate)), row.rating);
+        library.addNewFilm(nt);
+    }
+    console.log(library.print())*/
+
+    console.log("******** Watched Films Today*******")
+    let favorite_film = await library.getTitle('Pulp Fiction')
+    for (let row of favorite_film) {
+        let nt = new Film(row.id, row.title, row.favorite, dayjs((row.watchdate)), row.rating);
+        library.addNewFilm(nt);
+    }
+    console.log(library.print())
 
 
-    //mi devo ricordare sempre di chiudere il db
+
+
     db.close()
 }
 
