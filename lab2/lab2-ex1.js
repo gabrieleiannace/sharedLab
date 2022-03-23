@@ -189,6 +189,19 @@ function FilmLibrary() {
       })
     });
   }
+
+  this.deleteFilmFromID = async (id) => {
+    return new Promise((resolve, reject) => {
+      db.run("DELETE FROM films WHERE id=?", [id], err =>{
+        if(err){
+          reject('errore');
+        }
+        else {
+          resolve('success');
+        }
+      })
+    });
+  }
 }
 
 async function main() {
@@ -243,12 +256,20 @@ async function main() {
   console.log('***********************');
 
   const insert_film = new Film(7, "Cado dalle Nubi", true, "2022-03-17", 4);
-  try{
-  await library.storeFilm(insert_film).then((x) => console.log(x));
-  }catch(error){
+  try {
+    await library.storeFilm(insert_film).then((x) => console.log(x));
+  } catch (error) {
     console.log(error);
   }
 
+  console.log('***********************');
+
+
+  try{
+    await library.deleteFilmFromID(1).then(x => console.log(x));
+  }catch(error){
+    console.log(error);
+  }
   db.close();
 
 }
