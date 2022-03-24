@@ -20,47 +20,57 @@
         <div class="d-flex">
             <input class="form-control" type="search" placeholder="Search" aria-label="Search">
         </div>
-        <div class="text-light navbar-brand">
+        <div class="navbar-brand">
+            <a href="#" class="text-light">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
                 class="bi bi-person-circle" viewBox="0 0 16 16">
                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
                 <path fill-rule="evenodd"
                     d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
             </svg>
+            </a>
         </div>
     </nav>
     <div class="containter-fluid">
-        <div class="row">
-            <div class="col-3 bg-light">
-                <table class="table">
-                <tr>
+        <div class="row" style="min-height: 50vh;">
+            <div class="col-3 bg-light mt-2">
+                <table class="table table-hover mx-1">
+                <tbody>
+                <tr class="bg-primary text-light">
                     <td>
-                    <span>All</span>
+                        All
                     </td>
                 </tr>
                 <tr>
                     <td>
-                    <span>Best Rated</span>
+                        Favorite
                     </td>
                 </tr>
                 <tr>
                     <td>
-                    <span>Last Seen</span>
+                        Best Rated
                     </td>
                 </tr>
                 <tr>
                     <td>
-                    <span>Seen Last Month</span>
+                        Last Seen
                     </td>
                 </tr>
-            </table>
+                <tr>
+                    <td>
+                        Seen Last Month
+                    </td>
+                </tr>
+                </tbody>
+                </table>
             </div>
-            <div class="col-9 bg-white">
+            <div class="col-9 bg-white mt-2">
                 <h2>All</h2>
                 <table class="table">
                     <tr>
                         <td>Pulp Fiction</td>
-                        <td><input type="checkbox" checked>March 10, 2022</td>
+                        <td><input type="checkbox" checked> Favorite</td>
+                        <td>March 10, 2022</td>
                         <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-star-fill" viewBox="0 0 16 16">
                                 <path
@@ -90,7 +100,7 @@
                     </tr>
                     <tr>
                         <td>21 Grams</td>
-                        <td><input type="checkbox" checked>favorite</td>
+                        <td><input type="checkbox" checked> Favorite</td>
                         <td>March 17, 2022</td>
                         <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-star-fill" viewBox="0 0 16 16">
@@ -121,7 +131,7 @@
                     </tr>
                     <tr>
                         <td>Star Wars</td>
-                        <td><input type="checkbox">favorite</td>
+                        <td><input type="checkbox"> Favorite</td>
                         <td></td>
                         <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-star" viewBox="0 0 16 16">
@@ -152,7 +162,7 @@
                     </tr>
                     <tr>
                         <td>Matrix</td>
-                        <td><input type="checkbox">favorite</td>
+                        <td><input type="checkbox"> Favorite</td>
                         <td></td>
                         <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-star" viewBox="0 0 16 16">
@@ -183,7 +193,7 @@
                     </tr>
                     <tr>
                         <td>Shrek</td>
-                        <td><input type="checkbox">favorite</td>
+                        <td><input type="checkbox"> Favorite</td>
                         <td>March 21, 2022</td>
                         <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-star-fill" viewBox="0 0 16 16">
@@ -216,6 +226,19 @@
             </div>
         </div>
     </div>
+    <div class="row align-items-end justify-content-end position-relative">
+        <div class="col-2 align-self-end">
+            
+        </div>
+    </div>
+    <div class="position-fixed bottom-0 end-0 mx-5 my-5">
+    <a href="#" id="button_addFilm" class="text-primary position-end">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
+        </svg>
+        </a>
+    </div>
+   
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
