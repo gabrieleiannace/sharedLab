@@ -132,9 +132,9 @@ function FilmLibrary() {
 
     this.getTitle = (tit) => {
         //questo metodo mi restituisce i film visti prima di una data passata come parametro
-        let sql = 'select * from films where title = ? ';
+        let sql = 'select * from films where title like ? ';
         return new Promise((resolve, reject) => {
-            db.all(sql, [tit], (err, rows) => {
+            db.all(sql, ["%" + tit + "%"], (err, rows) => {
                 if (err) {
                     reject(err)
                 }
@@ -195,7 +195,7 @@ async function main() {
     console.log(library.print())*/
 
     console.log("******** Watched Films Today*******")
-    let favorite_film = await library.getTitle('Pulp Fiction')
+    let favorite_film = await library.getTitle('Pulp ')
     for (let row of favorite_film) {
         let nt = new Film(row.id, row.title, row.favorite, dayjs((row.watchdate)), row.rating);
         library.addNewFilm(nt);
