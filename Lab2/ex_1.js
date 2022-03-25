@@ -34,6 +34,7 @@ function Film(id, title, isFavorite = false, watchDate = '', rating = 0) {
 }
 
 function FilmLibrary() {
+  const db = new sqlite.Database('films.db', (err) => { if (err) throw err });
   this.list = [];
 
   this.print = () => {
@@ -94,7 +95,7 @@ function FilmLibrary() {
           resolve(rows);
         }
       });
-      db.close();
+      
     });
   }
 
@@ -111,7 +112,7 @@ function FilmLibrary() {
           resolve(rows);
         }
       });
-      db.close();
+      
     })
   }
 
@@ -199,21 +200,21 @@ function FilmLibrary() {
           resolve("Success");
         }
       })
-      db.close()
+      
     })
   }
 
-  this.deleteById = (id) => {
+  this.deleteById = () => {
     return new Promise((resolve, reject) => {
-      const db = new sqlite.Database('films.db', (err) => { if (err) throw err });
-      const query = 'DELETE FROM FILMS WHERE ID = ?;';
-      db.run(query, [id], (err) => {
+      
+      const query = 'DELETE FROM FILMS WHERE ID = 21, 22, 24, 26, 27, 28, 29, 30';
+      db.run(query, [], (err) => {
         if (err) {
           reject(err);
           return;
         }
         else {
-          resolve("Success");
+          resolve("Success1");
         }
       })
     })
@@ -232,27 +233,31 @@ function FilmLibrary() {
           resolve("Success");
         }
       })
-      db.close();
+      
     })
   }
 
+  this.closeDB = () =>{
+    db.close();
+  }
+  
 }
 
 async function main() {
   // Creating some film entries
-  const f1 = new Film(1, "Pulp Fiction", true, "2022-03-10", 5);
-  const f2 = new Film(2, "21 Grams", true, "2022-03-17", 4);
-  const f3 = new Film(3, "Star Wars", false);
-  const f4 = new Film(4, "Matrix", false);
-  const f5 = new Film(5, "Shrek", false, "2022-03-21", 3);
+  // const f1 = new Film(1, "Pulp Fiction", true, "2022-03-10", 5);
+  // const f2 = new Film(2, "21 Grams", true, "2022-03-17", 4);
+  // const f3 = new Film(3, "Star Wars", false);
+  // const f4 = new Film(4, "Matrix", false);
+  // const f5 = new Film(5, "Shrek", false, "2022-03-21", 3);
 
   // Adding the films to the FilmLibrary
   const library = new FilmLibrary();
-  library.addNewFilm(f1);
-  library.addNewFilm(f2);
-  library.addNewFilm(f3);
-  library.addNewFilm(f4);
-  library.addNewFilm(f5);
+  // library.addNewFilm(f1);
+  // library.addNewFilm(f2);
+  // library.addNewFilm(f3);
+  // library.addNewFilm(f4);
+  // library.addNewFilm(f5);
 
   // Print Sorted films
   // console.log("***** List of Films sorted by watchDate *****");
@@ -277,16 +282,20 @@ async function main() {
   // debugger;
   // await library.getAll().then(value => console.log(value));
 
-  // await library.getFavorites().then(value => console.log(value));
   // await library.getWatchedToday().then(value => console.log(value));
   // await library.getBeforeDate("2022-03-21").then(value => console.log(value));
   // await library.getGreaterThanRating(3).then(value => console.log(value));
   // await library.getByTitle("Star Wars").then(value => console.log(value));
 
   // Resolve: DB does not update
-  await library.store("Hunger Games", 1, "2022-03-21", 4).then(value => console.log(value));
-  await library.deleteById(23).then(value => console.log(value));
-  await library.resetWatchdate().then(value => console.log(value));
+  // await library.store("Hunger Games", 1, "2022-03-21", 4).then(value => console.log(value));
+ 
+  await library.deleteById();
+  await library.getFavorites().then(value => console.log(value));
+
+  // library.closeDB();
+  
+  // await library.resetWatchdate().then(value => console.log(value));
   
 }
 
