@@ -101,7 +101,7 @@ function arrayFilm() {
     const f2 = new Film(2, "21 Grams", true, "2022-03-17", 4);
     const f3 = new Film(3, "Star Wars", false);
     const f4 = new Film(4, "Matrix", false);
-    const f5 = new Film(5, "Shrek", false, "2022-03-21", 3);
+    const f5 = new Film(5, "Shrek", false, "2022-03-31", 3);
     //aggiungo i film alla libreria
     const library = new FilmLibrary();
     library.addNewFilm(f1)
@@ -142,6 +142,13 @@ function filter() {
             const a = populateWebPage(f)
             tableBodyA.appendChild(a)
         }
+        const nav = document.querySelectorAll(".list-group-item-action")
+        nav.forEach(n => {
+            n.classList.remove("active")
+            n.classList.add("bg-light")
+        })
+        all.classList.add('active')
+        all.classList.remove("bg-light")
     })
 
     const link = document.getElementById('favorite')
@@ -149,17 +156,21 @@ function filter() {
         let films = arrayFilm()
         const tableBodyF = document.getElementById('ta')
         tableBodyF.innerText = ""
-        link.classList.remove('bg-light')
-        link.classList.add('active')
-        all.classList.remove('active')
-        all.classList.add('bg-light')
         for (let f of films.film) {
             if (f.favorite) {
                 const newFavorite = populateWebPage(f)
                 tableBodyF.appendChild(newFavorite)
             }
         }
+        const nav = document.querySelectorAll(".list-group-item-action")
+        nav.forEach(n => {
+            n.classList.remove("active")
+            n.classList.add("bg-light")
+        })
+        link.classList.add('active')
+        link.classList.remove("bg-light")
     })
+
 
     const best = document.getElementById('best')
     best.addEventListener('click', event => {
@@ -172,25 +183,68 @@ function filter() {
                 tableBodyB.appendChild(newBest)
             }
         }
+        const nav = document.querySelectorAll(".list-group-item-action")
+        nav.forEach(n => {
+            n.classList.remove("active")
+            n.classList.add("bg-light")
+        })
+        best.classList.add('active')
+        best.classList.remove("bg-light")
     })
 
-}
-/*const lastSeen = document.getElementById('last')
-lastSeen.addEventListener('click', event => {
-    let films = arrayFilm()
-    const tableBodyL = document.getElementById('ta')
-    tableBodyL.innerText = ""
-    let today = dayjs(new Date())
-    let filmDate = films.date
-    for (let f of films.film) {
-        if (true) {
-            const newLastSeen = populateWebPage(f)
-            tableBodyL.appendChild(newLastSeen)
-            console.log(filmDate)
-        }
-    }
-})
-*/
+    const lastSeen = document.getElementById('last')
+    lastSeen.addEventListener('click', event => {
+        let films = arrayFilm()
+        const tableBodyL = document.getElementById('ta')
+        tableBodyL.innerText = ""
 
-filter()
+        let today = dayjs(new Date())
+        for (let f of films.film) {
+            let filmDate = f.date
+            if (today.diff(filmDate, 'day') < 7) {
+                const newLastSeen = populateWebPage(f)
+                tableBodyL.appendChild(newLastSeen)
+            }
+        }
+        const nav = document.querySelectorAll(".list-group-item-action")
+        nav.forEach(n => {
+            n.classList.remove("active")
+            n.classList.add("bg-light")
+        })
+        lastSeen.classList.add('active')
+        lastSeen.classList.remove("bg-light")
+
+    })
+
+
+    const Monthy = document.getElementById('monthy')
+    Monthy.addEventListener('click', event => {
+        let films = arrayFilm()
+        const tableBodyM = document.getElementById('ta')
+        tableBodyM.innerText = ""
+
+        let today = dayjs(new Date())
+        for (let f of films.film) {
+            let filmDate = f.date
+            if (today.diff(filmDate, 'day') < 30) {
+                const newLastMonthy = populateWebPage(f)
+                tableBodyM.appendChild(newLastMonthy)
+            }
+        }
+        const nav = document.querySelectorAll(".list-group-item-action")
+        nav.forEach(n => {
+            n.classList.remove("active")
+            n.classList.add("bg-light")
+        })
+        Monthy.classList.add('active')
+        Monthy.classList.remove("bg-light")
+
+    })
+}
+
+
+
+
+
+filter();
 
