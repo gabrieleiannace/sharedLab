@@ -20,7 +20,29 @@ function FilmLibrary() {
         else
             throw new Error('Duplicate ID')
     }
+
+
 }
+
+function arrayFilm() {
+    //creo alcune istanze dei film
+    const f1 = new Film(1, "Pulp Fiction", true, "2022-03-10", 5);
+    const f2 = new Film(2, "21 Grams", true, "2022-03-17", 4);
+    const f3 = new Film(3, "Star Wars", false);
+    const f4 = new Film(4, "Matrix", false);
+    const f5 = new Film(5, "Shrek", false, "2022-03-31", 3);
+    //aggiungo i film alla libreria
+    const library = new FilmLibrary();
+    library.addNewFilm(f1)
+    library.addNewFilm(f2)
+    library.addNewFilm(f3)
+    library.addNewFilm(f4)
+    library.addNewFilm(f5)
+
+    return library
+}
+
+
 
 function populateWebPage(film) {
     //carico il titolo
@@ -100,23 +122,7 @@ function populateWebPage(film) {
 
 }
 
-function arrayFilm() {
-    //creo alcune istanze dei film
-    const f1 = new Film(1, "Pulp Fiction", true, "2022-03-10", 5);
-    const f2 = new Film(2, "21 Grams", true, "2022-03-17", 4);
-    const f3 = new Film(3, "Star Wars", false);
-    const f4 = new Film(4, "Matrix", false);
-    const f5 = new Film(5, "Shrek", false, "2022-03-31", 3);
-    //aggiungo i film alla libreria
-    const library = new FilmLibrary();
-    library.addNewFilm(f1)
-    library.addNewFilm(f2)
-    library.addNewFilm(f3)
-    library.addNewFilm(f4)
-    library.addNewFilm(f5)
 
-    return library
-}
 
 
 function paginaIniziale() {
@@ -137,11 +143,18 @@ function paginaIniziale() {
     trash.forEach(t => {
         t.setAttribute("style", "cursor:pointer")
         t.addEventListener('click', event => {
-            const tra = t.parentNode.parentNode.parentNode
-            tra.remove()
+            const tra = t.parentNode.firstChild.textContent
+            const new_list = films.film.filter(a => a.title !== tra)
+            films.film = new_list
+            const n = t.parentNode.parentNode.parentNode
+            n.remove()
+            console.log(new_list)
+
         })
     })
 }
+
+
 
 function filter() {
     paginaIniziale()
@@ -167,10 +180,16 @@ function filter() {
         trash.forEach(t => {
             t.setAttribute("style", "cursor:pointer")
             t.addEventListener('click', event => {
-                const tra = t.parentNode.parentNode.parentNode
-                tra.remove()
+                const tra = t.parentNode.firstChild.textContent
+                const new_list = films.film.filter(a => a.title !== tra)
+                films.film = new_list
+                const n = t.parentNode.parentNode.parentNode
+                n.remove()
+                console.log(new_list)
+
             })
         })
+
     })
 
     const link = document.getElementById('favorite')
@@ -196,8 +215,13 @@ function filter() {
         trash.forEach(t => {
             t.setAttribute("style", "cursor:pointer")
             t.addEventListener('click', event => {
-                const tra = t.parentNode.parentNode.parentNode
-                tra.remove()
+                const tra = t.parentNode.firstChild.textContent
+                const new_list = films.film.filter(a => a.title !== tra)
+                films.film = new_list
+                const n = t.parentNode.parentNode.parentNode
+                n.remove()
+                console.log(films.film)
+
             })
         })
     })
