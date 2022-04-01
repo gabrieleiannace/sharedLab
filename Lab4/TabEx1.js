@@ -22,8 +22,6 @@ function FilmLibrary() {
     }
 }
 
-
-
 function populateWebPage(film) {
     //carico il titolo
     const newTd1 = document.createElement("div");
@@ -40,11 +38,11 @@ function populateWebPage(film) {
     const newTd2 = document.createElement("div");
     if (film.favorite) {
         newTd2.innerHTML = ` <input class="form - check - input me - 1" type="checkbox" value="" id="flexCheckChecked" checked > Favorite`
-        newTd2.classList.add("col-3")
+        newTd2.classList.add("col-2")
     }
     else {
         newTd2.innerHTML = ` <input class="form - check - input me - 1" type="checkbox" value="" id="flexCheckChecked"  > Favorite`
-        newTd2.classList.add("col-3")
+        newTd2.classList.add("col-2")
     }
 
     //carico la data
@@ -70,6 +68,12 @@ function populateWebPage(film) {
         }
     }
 
+    //inserisco icona cestino
+    const newTd5 = document.createElement("div")
+    newTd5.innerHTML = `&#128465`
+    newTd5.classList.add("col-1")
+    newTd5.setAttribute("id", "trash")
+
 
     //creo la mia struttura annidata , unendo opportunamente i figli
     const newTr = document.createElement("li");
@@ -90,6 +94,7 @@ function populateWebPage(film) {
     newTr2.appendChild(newTd2)
     newTr2.appendChild(newTd3)
     newTr2.appendChild(newTd4)
+    newTr2.appendChild(newTd5)
     //newTr contiene il primo elemento a cui devo unire tutti i figli
     return newTr
 
@@ -128,6 +133,14 @@ function paginaIniziale() {
         //come commentato
         tableBody.appendChild(newRow)
     }
+    const trash = document.querySelectorAll('#trash')
+    trash.forEach(t => {
+        t.setAttribute("style", "cursor:pointer")
+        t.addEventListener('click', event => {
+            const tra = t.parentNode.parentNode.parentNode
+            tra.remove()
+        })
+    })
 }
 
 function filter() {
@@ -149,6 +162,15 @@ function filter() {
         })
         all.classList.add('active')
         all.classList.remove("bg-light")
+
+        const trash = document.querySelectorAll('#trash')
+        trash.forEach(t => {
+            t.setAttribute("style", "cursor:pointer")
+            t.addEventListener('click', event => {
+                const tra = t.parentNode.parentNode.parentNode
+                tra.remove()
+            })
+        })
     })
 
     const link = document.getElementById('favorite')
@@ -169,6 +191,15 @@ function filter() {
         })
         link.classList.add('active')
         link.classList.remove("bg-light")
+
+        const trash = document.querySelectorAll('#trash')
+        trash.forEach(t => {
+            t.setAttribute("style", "cursor:pointer")
+            t.addEventListener('click', event => {
+                const tra = t.parentNode.parentNode.parentNode
+                tra.remove()
+            })
+        })
     })
 
 
@@ -190,6 +221,15 @@ function filter() {
         })
         best.classList.add('active')
         best.classList.remove("bg-light")
+
+        const trash = document.querySelectorAll('#trash')
+        trash.forEach(t => {
+            t.setAttribute("style", "cursor:pointer")
+            t.addEventListener('click', event => {
+                const tra = t.parentNode.parentNode.parentNode
+                tra.remove()
+            })
+        })
     })
 
     const lastSeen = document.getElementById('last')
@@ -213,6 +253,15 @@ function filter() {
         })
         lastSeen.classList.add('active')
         lastSeen.classList.remove("bg-light")
+
+        const trash = document.querySelectorAll('#trash')
+        trash.forEach(t => {
+            t.setAttribute("style", "cursor:pointer")
+            t.addEventListener('click', event => {
+                const tra = t.parentNode.parentNode.parentNode
+                tra.remove()
+            })
+        })
 
     })
 
@@ -239,7 +288,17 @@ function filter() {
         Monthy.classList.add('active')
         Monthy.classList.remove("bg-light")
 
+        const trash = document.querySelectorAll('#trash')
+        trash.forEach(t => {
+            t.setAttribute("style", "cursor:pointer")
+            t.addEventListener('click', event => {
+                const tra = t.parentNode.parentNode.parentNode
+                tra.remove()
+            })
+        })
+
     })
+
 }
 
 
