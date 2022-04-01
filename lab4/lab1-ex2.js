@@ -5,15 +5,6 @@
  */
 
 'use strict';
-const dayjs = require("dayjs");
-
-// internationalization (i18n) 
-const localizedFormat = require('dayjs/plugin/localizedFormat');
-dayjs.extend(localizedFormat); // use shortcuts 'LL' for date in U.S. format
-/* locale
-  const locale_it = require('dayjs/locale/it');
-  dayjs.locale('it');
-*/
 
 function Film(id, title, isFavorite = false, watchDate = '', rating = 0) {
   this.id = id;
@@ -112,8 +103,6 @@ function main() {
   // Deleting film #3
   library.deleteFilm(3);
 
-  // Reset dates
-  library.resetWatchedFilms();
 
   // Printing modified Library
   library.print();
@@ -124,7 +113,7 @@ function main() {
   rated_films.forEach((film) => console.log(film.toString()));
 
   // Additional instruction to enable debug 
-  debugger;
+  //debugger;
 }
 
 main();
