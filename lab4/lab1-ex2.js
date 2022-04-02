@@ -175,6 +175,13 @@ function SeenLastMonth(library) {
   }
 }
 
+function removeSelectionHilight() {
+  const sideBarElem = document.querySelectorAll('div.list-group-flush a.list-group-item');
+  for (let element of sideBarElem) {
+    element.classList.remove("active");
+  }
+}
+
 function SideBarEventListnerEnable(boolean, library = undefined) {
 
   //Condizione di uscita, disattiva gli eventi della sideBar
@@ -189,21 +196,32 @@ function SideBarEventListnerEnable(boolean, library = undefined) {
         switch (elem.innerHTML) {
           case "All":
             All(library);
+            elem.classList.add("active");
             break;
           case "Favorite":
+            removeSelectionHilight()
             Favorite(library);
+            elem.classList.add("active");
             break;
           case "Best Rated":
+            removeSelectionHilight()
             BestRated(library);
+            elem.classList.add("active");
             break;
           case "Last Seen":
+            removeSelectionHilight()
             SeenLastMonth(library);
+            elem.classList.add("active");
             break;
           case "Seen Last Month":
+            removeSelectionHilight()
             SeenLastMonth(library);
+            elem.classList.add("active");
             break;
           default:
+            removeSelectionHilight()
             All(library);
+            elem.classList.add("active");
             break;
         }
     })
