@@ -159,7 +159,6 @@ function BestRated(library) {
   ClearTable("table-hook");
 
   let fiveStarRate = library.getSpecificRate(5);
-  console.log(fiveStarRate);
   for (const film of fiveStarRate)
     Append2TableById("table-hook", film);
 }
@@ -176,6 +175,44 @@ function SeenLastMonth(library) {
   }
 }
 
+function SideBarEventListnerEnable(boolean, library = undefined) {
+
+  //Condizione di uscita, disattiva gli eventi della sideBar
+  if (!boolean) return;
+
+
+  //Condizione di attivazione eventi
+  const sideBarElem = document.querySelectorAll('div.list-group-flush a.list-group-item');
+  for (const elem of sideBarElem) {
+    elem.addEventListener('click', event => {
+      if (library)
+        switch (elem.innerHTML) {
+          case "All":
+            All(library);
+            break;
+          case "Favorite":
+            Favorite(library);
+            break;
+          case "Best Rated":
+            BestRated(library);
+            break;
+          case "Last Seen":
+            SeenLastMonth(library);
+            break;
+          case "Seen Last Month":
+            SeenLastMonth(library);
+            break;
+          default:
+            All(library);
+            break;
+        }
+    })
+
+  }
+
+}
+
+const library = new FilmLibrary();
 function main() {
   // Creating some film entries
   const f1 = new Film(1, "Pulp Fiction", true, "2022-03-10", 5);
@@ -185,7 +222,6 @@ function main() {
   const f5 = new Film(5, "Shrek", false, "2022-03-21", 3);
 
   // Adding the films to the FilmLibrary
-  const library = new FilmLibrary();
   library.addNewFilm(f1);
   library.addNewFilm(f2);
   library.addNewFilm(f3);
@@ -196,6 +232,8 @@ function main() {
   console.log("***** List of Films sorted by watchDate *****");
   const sorted_films = library.sortByDate();
   sorted_films.forEach((film) => console.log(film.toString()));
+
+  SideBarEventListnerEnable(true, library);
 
   All(library);
   //Favorite(library);
