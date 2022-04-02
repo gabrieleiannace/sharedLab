@@ -261,8 +261,10 @@ function EnableRemoveButtons() {
   for (const button of buttons) {
     button.addEventListener('click', event => {
       //console.log(button.parentElement.parentElement.parentElement.innerHTML);
+      button.removeEventListener('click', () =>{});
       button.parentElement.parentElement.remove();
 
+      //Cancelliamo il film dalla library
       library.list = library.list.filter(film => film.title !== button.parentElement.parentElement.firstChild.innerHTML);
     })
   }
