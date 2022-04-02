@@ -260,7 +260,10 @@ function EnableRemoveButtons() {
   const buttons = document.querySelectorAll(".btn-outline-danger");
   for (const button of buttons) {
     button.addEventListener('click', event => {
+      //console.log(button.parentElement.parentElement.parentElement.innerHTML);
       button.parentElement.parentElement.remove();
+
+      library.list = library.list.filter(film => film.title !== button.parentElement.parentElement.firstChild.innerHTML);
     })
   }
 
