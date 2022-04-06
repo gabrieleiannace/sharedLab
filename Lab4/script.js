@@ -41,6 +41,8 @@ function FilmLibrary() {
     this.list.forEach((item) => console.log(item.toString()));
   }
 
+  
+
   this.addNewFilm = (film) => {
     if(!this.list.some(f => f.id == film.id))
       this.list.push(film);
@@ -81,15 +83,68 @@ function FilmLibrary() {
     return new_array;
   }
 
-  
+  this.loadAll = (event) => {
+    const linkList = event.currentTarget.parentNode.querySelectorAll("a");
+    linkList.forEach( a => {
+      a.classList.remove("active");
+    })
+    event.currentTarget.classList.add("active");
+    document.querySelector("main").firstElementChild.textContent = "All";
+    load(this.list);
+  }
 }
 
-function loadAll(event){
+function load(library){
+  const ul = document.querySelector("main ul");
+  ul.innerHTML = "";
+  for(const f of library){
+    console.log(f);
+    const li = document.createElement("li");
+    li.classList.add("list-group-item", "pt-3", "pb-3");
+    const div = document.createElement("div");
+    div.classList.add("container-fluid");
+    const row = document.createElement("div");
+    row.classList.add("row");
+    const col4 = document.createElement("div");
+    col4.classList.add("col-4");
+    col4.textContent = f.title;
+    const col3 = document.createElement("div");
+    div.classList.add("col-3");
+    const input = document.createElement("input");
+    input.classList.add("form-check-input", "me-1");
+    input.setAttribute("type", "checkbox");
+    input.setAttribute("value", "value");
+    input.textContent = "Favorite";
+    const col3Date = document.createElement("div");
+    col3Date.classList.add("col-3");
+    col3Date.textContent = f.watchDate;
+    const col2 = document.createElement("div");
+    col2.classList.add("col-2");
+    col2.textContent = f.rating;
+
+    col3.appendChild(input);
+    row.appendChild(col4);
+    row.appendChild(col3);
+    row.appendChild(col3Date);
+    row.appendChild(col2);
+    div.appendChild(row);
+    li.appendChild(div);
+    ul.appendChild(li);
+
+    // questo è come non si deve fare, benedetto chi ha inventato react
+  }
+}
+
+
+// funzione da inserire in this
+function loadFavorites(event){
   const linkList = event.currentTarget.parentNode.querySelectorAll("a");
   linkList.forEach( a => {
     a.classList.remove("active");
   })
   event.currentTarget.classList.add("active");
+  document.querySelector("main").firstElementChild.textContent = "Favorites";
+  // qui facciamo una shallow copy e passare la lista di elementi alla funzione generica load
 }
 
 async function main() {
@@ -109,9 +164,9 @@ async function main() {
   library.addNewFilm(f5);
 
   // Print Sorted films
-  console.log("***** List of Films sorted by watchDate *****");
-  const sorted_films = library.sortByDate();
-  sorted_films.forEach((film) => console.log(film.toString()));
+  // console.log("***** List of Films sorted by watchDate *****");
+  // const sorted_films = library.sortByDate();
+  // sorted_films.forEach((film) => console.log(film.toString()));
   
   // const elems = document.getElementById("navigator").querySelectorAll("a");
 
@@ -119,8 +174,8 @@ async function main() {
   //   e.addEventListener('click', event => console.log(event))
   // })
 
-  document.getElementById("all").addEventListener('click', loadAll); 
-  // document.getElementById("favorites").addEventListener('click', loadFavorites); 
+  document.getElementById("all").addEventListener('click', library.loadAll); 
+  document.getElementById("favorites").addEventListener('click', loadFavorites); 
   // document.getElementById("best-rated").addEventListener('click', loadBestRated); 
   // document.getElementById("last-seen").addEventListener('click', loadLastSeen); 
   // document.getElementById("seen-last-month").addEventListener('click', loadSeenLastMonth); 
@@ -128,5 +183,6 @@ async function main() {
 
 }
 
+const library = new FilmLibrary();
 console.log("inizio")
 main();
