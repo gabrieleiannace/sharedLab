@@ -109,7 +109,7 @@ function load(library){
     col4.classList.add("col-4");
     col4.textContent = f.title;
     const col3 = document.createElement("div");
-    div.classList.add("col-3");
+    col3.classList.add("col-3");
     const input = document.createElement("input");
     input.classList.add("form-check-input", "me-1");
     input.setAttribute("type", "checkbox");
