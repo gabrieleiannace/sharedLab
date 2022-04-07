@@ -268,8 +268,6 @@ function EnableRemoveButtons() {
       library.list = library.list.filter(film => film.title !== button.parentElement.parentElement.firstChild.innerHTML);
     })
   }
-
-
 }
 
 const library = new FilmLibrary();
