@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Col, Container, Row, Button, Nav } from 'react-bootstrap';
+import { Col, Container, Row, Button, Nav, Table } from 'react-bootstrap';
 
 
 function MyButton(props) {
@@ -68,6 +68,32 @@ function App() {
           </Row>
         </Container>
       </Nav>
+      {/* Fine NavBar */}
+
+      <Container>
+        <Row>
+          <Col className='col-sm-4 my-col h6 d-none d-sm-block g-0'>
+            <Container style={{ border: "3px solid green" }} className='list-group-flush my-list vh-100 bg-light py-2'>
+              <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                All
+              </a>
+              <a href="#" className="list-group-item bg-light list-group-item-action">Favorite</a>
+              <a href="#" className="list-group-item bg-light list-group-item-action">Best Rated</a>
+              <a href="#" className="list-group-item bg-light list-group-item-action">Last Seen</a>
+              <a href="#" className="list-group-item bg-light list-group-item-action">Seen Last Month</a>
+            </Container>
+          </Col>
+          <Col style={{border: "3px solid yellow"}} className='col-sm-8 col-12 my-col py-2'>
+            <h2>
+              All
+            </h2>
+            <Table>
+
+            </Table>
+          </Col>
+        </Row>
+      </Container>
+
     </body>
   );
 }
