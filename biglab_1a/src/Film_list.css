@@ -1,0 +1,6 @@
+#film_filter{
+    min-height: 50vh;
+}
+.table-hover tbody tr:hover.filter-active td, .table-hover tbody tr:hover.filter-active th {
+    color:white;
+}
