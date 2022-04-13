@@ -1,10 +1,64 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Col, Container, Row, Button, Nav, Table } from 'react-bootstrap';
+import { Col, Container, Row, Nav, Table, Dropdown } from 'react-bootstrap';
+import { Film, FilmLibrary } from './Film.js'
+
+// Creating some film entries
+const f1 = new Film(1, "Pulp Fiction", true, "2022-03-10", 5);
+const f2 = new Film(2, "21 Grams", true, "2022-03-17", 4);
+const f3 = new Film(3, "Star Wars", false);
+const f4 = new Film(4, "Matrix", false);
+const f5 = new Film(5, "Shrek", false, "2022-03-21", 3);
+// Creating the film library
+const library = new FilmLibrary();
+// Adding the films to the FilmLibrary
+library.addNewFilm(f1);
+library.addNewFilm(f2);
+library.addNewFilm(f3);
+library.addNewFilm(f4);
+library.addNewFilm(f5);
 
 
+function FilmRow(props) {
+  const film = props.film;
+  const filledStars = film.rating;
+  const emptyStars = 5 - filledStars;
+
+
+  return (
+    <tr>
+      <td>{film.title}</td>
+      <td>
+        <Container className='form-check'>
+          <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked={film.favorite} />
+          <label class="form-check-label" for="flexCheckDefault">
+            Favorite
+          </label>
+        </Container>
+      </td>
+      <td>{film.watchDate ? film.watchDate.format('MMMM D, YYYY') : "none"}</td>
+    </tr>
+  );
+}
+
+function FilmTable(props) {
+  const films = props.library.list;
+  const filmsRow = films.map(
+    film => <FilmRow film={film} />
+  )
+  return (<Table>{filmsRow}</Table>);
+}
+
+
+function NumberList(props) {
+  const numebers = props.numbers;
+  const listItem = numebers.map(
+    number => <li>{number}</li>);
+  return (<ul>{listItem}</ul>);
+}
 
 function App() {
+  const numbers = [1, 2, 3, 4, 5];
   return (
     <body>
       <Nav className="bg-primary" style={{ border: "5px solid red" }}>
@@ -78,84 +132,10 @@ function App() {
             <h2>
               All
             </h2>
-            <Table>
-              <tbody>
-                <tr>
-                  <td className='text-danger'>Pulp Fiction
-                  </td>
-                  <td>
-                    <Container className='form-check'>
-                      <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked />
-                      <label className="form-check-label" for="flexCheckDefault">
-                        Favorite
-                      </label>
-                    </Container>
-                  </td>
-                  <td>March 10, 2022</td>
-                  <td>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      className="bi bi-star-fill" viewBox="0 0 16 16">
-                      <path
-                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      className="bi bi-star-fill" viewBox="0 0 16 16">
-                      <path
-                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                    </svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      className="bi bi-star-fill" viewBox="0 0 16 16">
-                      <path
-                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                    </svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      className="bi bi-star-fill" viewBox="0 0 16 16">
-                      <path
-                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                    </svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      className="bi bi-star-fill" viewBox="0 0 16 16">
-                      <path
-                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                    </svg>
-                  </td>
-                </tr>
-                <tr>
-                  <td className='text-danger'>21 Grams</td>
-                  <td>
-                    <Container className='form-check'>
-                      <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked />
-                      <label className="form-check-label" for="flexCheckDefault">
-                        Favorite
-                      </label>
-                    </Container>
-                  </td>
-                  <td>March 17, 2022</td>
-                  <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    className="bi bi-star-fill" viewBox="0 0 16 16">
-                    <path
-                      d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                  </svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    className="bi bi-star-fill" viewBox="0 0 16 16">
-                      <path
-                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                    </svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      className="bi bi-star-fill" viewBox="0 0 16 16">
-                      <path
-                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                    </svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      className="bi bi-star-fill" viewBox="0 0 16 16">
-                      <path
-                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                    </svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      className="bi bi-star" viewBox="0 0 16 16">
-                      <path
-                        d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z" />
-                    </svg></td>
-                </tr>
-              </tbody>
-            </Table>
+            <FilmTable library={library} />
           </Col>
         </Row>
       </Container>
-
     </body>
   );
 }
