@@ -65,7 +65,7 @@ function FilmTable(props) {
   const filmsRow = films.map(
     film => <FilmRow film={film} />
   )
-  return (<Table>{filmsRow}</Table>);
+  return (<Table><tbody>{filmsRow}</tbody></Table>);
 }
 
 function App() {
@@ -126,9 +126,9 @@ function App() {
       {/* Fine NavBar */}
 
       <Container className='container-fluid'>
-        <Row>
-          <Col className='col-sm-4 my-col h6 d-none d-sm-block g-0'>
-            <Container style={{ border: "3px solid green" }} className='list-group-flush my-list vh-100 bg-light py-2'>
+        <Row style={{border: "10px solid violet"}}>
+          <Col className='col-sm-4 my-col h6 d-none d-sm-block g-0' style={{border: "10px solid yellow"}}>
+            <Container style={{ border: "10px solid green" }} className='list-group-flush my-list vh-100 bg-light py-2'>
               <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
                 All
               </a>
@@ -138,11 +138,9 @@ function App() {
               <a href="#" className="list-group-item bg-light list-group-item-action">Seen Last Month</a>
             </Container>
           </Col>
-          <Col style={{ border: "3px solid yellow" }} className='col-sm-8 col-12 my-col py-2'>
-            <h2>
-              All
-            </h2>
-            <FilmTable library={library} />
+          <Col className="col-sm-8 col-12 py-2"style={{border: "10px solid red"}}>
+            <h2>All</h2>
+            <FilmTable library={library}/>
           </Col>
         </Row>
       </Container>
