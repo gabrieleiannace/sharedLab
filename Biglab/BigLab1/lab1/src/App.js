@@ -9,8 +9,10 @@ const f2 = new Film(2, "21 Grams", true, "2022-03-17", 4);
 const f3 = new Film(3, "Star Wars", false);
 const f4 = new Film(4, "Matrix", false);
 const f5 = new Film(5, "Shrek", false, "2022-03-21", 3);
+
 // Creating the film library
 const library = new FilmLibrary();
+
 // Adding the films to the FilmLibrary
 library.addNewFilm(f1);
 library.addNewFilm(f2);
@@ -25,6 +27,7 @@ function FilmRow(props) {
   const emptyStars = [];
 
   
+  const ratingCounter = 0;
   for(let i = 0; i < film.rating; ++i){
     filledStars.push(<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
     className="bi bi-star-fill" viewBox="0 0 16 16">
@@ -65,16 +68,7 @@ function FilmTable(props) {
   return (<Table>{filmsRow}</Table>);
 }
 
-
-function NumberList(props) {
-  const numebers = props.numbers;
-  const listItem = numebers.map(
-    number => <li>{number}</li>);
-  return (<ul>{listItem}</ul>);
-}
-
 function App() {
-  const numbers = [1, 2, 3, 4, 5];
   return (
     <body>
       <Nav className="bg-primary" style={{ border: "5px solid red" }}>
@@ -131,7 +125,7 @@ function App() {
       </Nav>
       {/* Fine NavBar */}
 
-      <Container>
+      <Container className='container-fluid'>
         <Row>
           <Col className='col-sm-4 my-col h6 d-none d-sm-block g-0'>
             <Container style={{ border: "3px solid green" }} className='list-group-flush my-list vh-100 bg-light py-2'>
