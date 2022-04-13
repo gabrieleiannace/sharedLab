@@ -39,3 +39,26 @@
 
 
 }
+
+#filter-sidebar .list-group-item.active {
+  background-color: rgb(0, 106, 255) !important;
+  border-color: #0453f3
+}
+
+#filter-sidebar a:hover {
+  background-color: rgb(105, 164, 247);
+  color: white;
+}
+
+#filter-sidebar .list-group-item {
+  background-color: transparent;
+}
+
+#sidebar-menu {
+  padding-left: 15px;
+  padding-top: 15px;
+}
+
+.row-h-100 {
+  min-height: 94.5vh;
+}
