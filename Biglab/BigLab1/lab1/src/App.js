@@ -3,14 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Col, Container, Row, Button, Nav, Table } from 'react-bootstrap';
 
 
-function MyButton(props) {
-  if (props.lang === "it")
-    return <Button>ciao</Button>
-  else
-    return <Button>hello</Button>
-}
-
-
 
 function App() {
   return (
