@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Col, Container, Row, Nav, Table, Accordion, Card, Button } from 'react-bootstrap';
 import { useAccordionButton } from 'react-bootstrap/AccordionButton';
 import { Film, FilmLibrary } from './Film.js'
+import './animation.css'
 
 // Creating some film entries
 const f1 = new Film(1, "Pulp Fiction", true, "2022-03-10", 5);
@@ -145,17 +146,17 @@ function App() {
       </Nav >
       {/* Fine NavBar */}
 
-      < Container fluid >
+      < Container fluid>
         <Row>
           <Col className='col-sm-4 h6 d-none d-sm-block g-0'>
             <Container className='list-group-flush my-list vh-100 bg-light py-2'>
-              <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+              <a href="#" class="list-group-item list-group-item-action" id='customSideBarElem' aria-current="true">
                 All
               </a>
-              <a href="#" className="list-group-item bg-light list-group-item-action">Favorite</a>
-              <a href="#" className="list-group-item bg-light list-group-item-action">Best Rated</a>
-              <a href="#" className="list-group-item bg-light list-group-item-action">Last Seen</a>
-              <a href="#" className="list-group-item bg-light list-group-item-action">Seen Last Month</a>
+              <a href="#" className="list-group-item list-group-item-action" id='customSideBarElem'>Favorite</a>
+              <a href="#" className="list-group-item list-group-item-action" id='customSideBarElem'>Best Rated</a>
+              <a href="#" className="list-group-item list-group-item-action" id='customSideBarElem'>Last Seen</a>
+              <a href="#" className="list-group-item list-group-item-action" id='customSideBarElem'>Seen Last Month</a>
             </Container>
           </Col>
           <Col className="col-sm-8 col-12 py-2">
@@ -164,11 +165,6 @@ function App() {
           </Col>
         </Row>
       </Container>
-      <div className="parent">
-        <div className='child'>
-          ciao
-        </div>
-      </div>
     </body >
   );
 }
