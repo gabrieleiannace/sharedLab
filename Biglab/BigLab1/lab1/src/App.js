@@ -71,8 +71,8 @@ function FilmTable(props) {
 function App() {
   return (
     <body>
-      <Nav className="bg-primary" style={{ border: "5px solid red" }}>
-        <Container>
+      <Nav className="bg-primary">
+        <Container fluid>
           <Row>
             {/*Questo è hamburger-menu nel caso in cui sia small screen*/}
             <Col className='text-light d-sm-none'>
@@ -85,7 +85,7 @@ function App() {
                 </svg>
               </a>
             </Col>
-            <Col className='text-light'>
+            <Col className='text-light p-1'>
               <a><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
                 className="bi bi-collection-play" viewBox="0 0 16 16">
                 <path
@@ -94,11 +94,11 @@ function App() {
                   d="M1.5 14.5A1.5 1.5 0 0 1 0 13V6a1.5 1.5 0 0 1 1.5-1.5h13A1.5 1.5 0 0 1 16 6v7a1.5 1.5 0 0 1-1.5 1.5h-13zm13-1a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-.5-.5h-13A.5.5 0 0 0 1 6v7a.5.5 0 0 0 .5.5h13z" />
               </svg> FilmLibrary</a>
             </Col>
-            <Col className="d-none d-sm-block">
+            <Col className="d-none d-sm-block p-1">
 
               <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
             </Col>
-            <Col className='text-light d-flex flex-row-reverse'>
+            <Col className='text-light d-flex flex-row-reverse p-1'>
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
                 className="bi bi-person-circle" viewBox="0 0 16 16">
                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
@@ -108,7 +108,7 @@ function App() {
             </Col>
           </Row>
         </Container>
-        <Container>
+        <Container fluid>
           <Row>
             <Col className='col-12 my-col g-0 p-0 d-block d-sm-none'>
               <Container className='list-group-flush nav-list collapse multi-collapse'>
@@ -125,10 +125,10 @@ function App() {
       </Nav>
       {/* Fine NavBar */}
 
-      <Container className='container-fluid'>
-        <Row style={{border: "10px solid violet"}}>
-          <Col className='col-sm-4 my-col h6 d-none d-sm-block g-0' style={{border: "10px solid yellow"}}>
-            <Container style={{ border: "10px solid green" }} className='list-group-flush my-list vh-100 bg-light py-2'>
+      <Container fluid>
+        <Row>
+          <Col className='col-sm-4 my-col h6 d-none d-sm-block g-0'>
+            <Container className='list-group-flush my-list vh-100 bg-light py-2'>
               <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
                 All
               </a>
@@ -138,7 +138,7 @@ function App() {
               <a href="#" className="list-group-item bg-light list-group-item-action">Seen Last Month</a>
             </Container>
           </Col>
-          <Col className="col-sm-8 col-12 py-2"style={{border: "10px solid red"}}>
+          <Col className="col-sm-8 col-12 py-2">
             <h2>All</h2>
             <FilmTable library={library}/>
           </Col>
