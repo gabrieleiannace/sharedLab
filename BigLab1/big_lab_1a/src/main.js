@@ -1,6 +1,5 @@
 import { Card, Table, Container, Form } from 'react-bootstrap';
 import { useState } from 'react'
-import { BsPlusCircleFill } from 'react-icons/bs'
 
 function MyMain(props) {
 
@@ -143,4 +142,5 @@ function Favorite(props) {
         </td>
     )
 }
+
 export default MyMain
