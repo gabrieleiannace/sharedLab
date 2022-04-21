@@ -13,7 +13,7 @@ function MyMain(props) {
                 </Card.Title>
                 <FilmTable films={filmList} active={props.active} setFilmList={setFilmList} />
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#0d6efd"
-                    class="bi bi-plus-circle-fill float-end" viewBox="0 0 16 16">
+                    className="bi bi-plus-circle-fill float-end" viewBox="0 0 16 16">
                     <path
                         d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
                 </svg>
@@ -23,20 +23,43 @@ function MyMain(props) {
 }
 
 function FilmTable(props) {
-    //const [films, setFilms] = useState(props.films.film);
-    //const list = ApplyFilter;
+
+
     return (
         <Table hover >
             <tbody>
                 {
-                    props.films.map((film) => <FilmRow films={film} active={props.active} key={film.id} />)
+                    ApplyFilter(props.active, props.films).map((film) => <FilmRow films={film} setFilmList={props.setFilmList} key={film.id} />)
+
 
                 }
-
             </tbody>
 
         </Table>
     );
+}
+
+function ApplyFilter(filter, films) {
+    let filteredList = new FilmLibrary()
+    switch (filter) {
+        case 'All':
+            filteredList = films
+            break;
+        case 'Favorites':
+            filteredList = films.filter(f => f.favorite)
+            break;
+        case 'Best Rated':
+            filteredList = films.filter(f => f.rating == 5)
+            break;
+        case 'Seen Last Month':
+            const last_month = dayjs().subtract(1, 'month')
+            filteredList = films.filter(f => f.date >= last_month)
+            break;
+        case 'Unseen':
+            filteredList = films.filter(f => f.date == '')
+            break;
+    }
+    return filteredList
 }
 
 
@@ -51,67 +74,16 @@ function FilmRow(props) {
 }
 
 function FilmData(props) {
+    return (
+        <>
+            <Title title={props.films.title} favorite={props.films.favorite} />
+            <Favorite favorite={props.films.favorite} />
+            <Date date={props.films.date} />
+            <Rating rating={props.films.rating} />
 
-    switch (props.active) {
-        case 'All':
-            return (
-                <>
-                    <Title title={props.films.title} favorite={props.films.favorite} />
-                    <Favorite favorite={props.films.favorite} />
-                    <Date date={props.films.date} />
-                    <Rating rating={props.films.rating} />
-                </>
-            );
-            break;
-        case 'Favorites':
-            if (props.films.favorite)
-                return (
-                    <>
-                        <Title title={props.films.title} favorite={props.films.favorite} />
-                        <Favorite favorite={props.films.favorite} />
-                        <Date date={props.films.date} />
-                        <Rating rating={props.films.rating} />
-                    </>
-                );
-            break;
-        case 'Best Rated':
-            if (props.films.rating == 5)
-                return (
-                    <>
-                        <Title title={props.films.title} favorite={props.films.favorite} />
-                        <Favorite favorite={props.films.favorite} />
-                        <Date date={props.films.date} />
-                        <Rating rating={props.films.rating} />
-                    </>
-                );
-            break;
-        case 'Seen Last Month':
-            const last_month = dayjs().subtract(1, 'month')
-            if (props.films.date >= last_month)
-                return (
-                    <>
-                        <Title title={props.films.title} favorite={props.films.favorite} />
-                        <Favorite favorite={props.films.favorite} />
-                        <Date date={props.films.date} />
-                        <Rating rating={props.films.rating} />
-                        {console.log(last_month)}
-                    </>
-                );
-            break;
-        case 'Unseen':
-            if (props.films.date == '')
-                return (
-                    <>
-                        <Title title={props.films.title} favorite={props.films.favorite} />
-                        <Favorite favorite={props.films.favorite} />
-                        <Date date={props.films.date} />
-                        <Rating rating={props.films.rating} />
-                    </>
-                );
-            break;
-    }
+        </>
 
-
+    );
 
 
 }
