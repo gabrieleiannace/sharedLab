@@ -1,5 +1,3 @@
-'use strict';
-
 const dayjs = require("dayjs");
 
 export function Film(id, title, isFavorite = false, watchDate = '', rating = 0) {
@@ -34,7 +32,7 @@ export function FilmLibrary() {
   }
 
   this.addNewFilm = (film) => {
-    if (!this.list.some(f => f.id == film.id))
+    if (!this.list.some(f => f.id === film.id))
       this.list.push(film);
     else
       throw new Error('Duplicate id');
@@ -60,7 +58,7 @@ export function FilmLibrary() {
 
   this.getSpecificRate = (rate) => {
     const new_list = this.list.filter(function (film, index, arr) {
-      return film.rating == rate;
+      return film.rating === rate;
     })
     return new_list;
   }
