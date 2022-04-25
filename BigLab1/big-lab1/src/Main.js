@@ -49,9 +49,9 @@ function FilmRow(props) {
     );
 }
 
-function Filter(filter, films) {
+function Filter(active, films) {
     let filteredList = new Library()
-    switch (filter) {
+    switch (active) {
         case 'Favorites':
             filteredList = films.filter(f => f.favorite)
             break;
