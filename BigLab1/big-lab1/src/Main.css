@@ -1,0 +1,18 @@
+.bi{
+    font-size: 1.4em;
+}
+
+.bi-pencil-square, .bi-trash{
+    font-size: .8em;
+    color: DodgerBlue;
+}
+
+.bi-plus-circle-fill{
+    font-size: 2.5em;
+}
+
+.bi-star-fill, .bi-star{
+    color: black;
+    margin: 0.1em;
+    font-size: .9em;
+}

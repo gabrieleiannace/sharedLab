@@ -1,7 +1,7 @@
 import { Navbar, Container, Nav, Form, FormControl, Col } from 'react-bootstrap';
 import "./Navbar.css";
 
-function MyNavbar() {
+function MyNavbar(props) {
     return (
         <>
             <Navbar bg="primary" expand="xxl" variant="dark">
@@ -35,12 +35,12 @@ function MyNavbar() {
                                 aria-label="Search"
                             />
                         </Form>
-                        <Nav className="me-auto d-md-none" style={{ maxHeight: '120px' }} navbarScroll>
-                            <Nav.Link href="#action1">All</Nav.Link>
-                            <Nav.Link href="#action2">Favorites</Nav.Link>
-                            <Nav.Link href="#action3">Best Rated</Nav.Link>
-                            <Nav.Link href="#action4">Last Seen</Nav.Link>
-                            <Nav.Link href="#action5">Favorites</Nav.Link>
+                        <Nav className="me-auto d-md-none" style={{ maxHeight: '120px' }} navbarScroll defaultActiveKey="#all">
+                            <Nav.Link action href="#all" onClick={() => { props.setActive('All') }}>All</Nav.Link>
+                            <Nav.Link action href="#favorites" onClick={() => { props.setActive('Favorites') }}>Favorites</Nav.Link>
+                            <Nav.Link action href="#best-rated" onClick={() => { props.setActive('Best Rated') }}>Best Rated</Nav.Link>
+                            <Nav.Link action href="#seen-last-month" onClick={() => { props.setActive('Seen Last Month') }}>Last Seen</Nav.Link>
+                            <Nav.Link action href="#unseen" onClick={() => { props.setActive('Unseen') }}>Favorites</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
