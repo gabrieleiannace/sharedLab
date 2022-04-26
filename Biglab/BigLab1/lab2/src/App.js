@@ -106,8 +106,9 @@ function FilmManager(props){
         break;
       case 3:
         setFilmList(props.filmList.filter((film) =>{
-          console.log(film.rating);
-          return film.watchDate === dayjs();
+          const today = dayjs(new Date());
+          
+          return (today.diff(film.watchDate, 'day') < 30)
         }))
         break;
       case 4:
