@@ -1,6 +1,6 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Col, Container, Row, Nav, Table, Accordion, Button, ListGroup } from 'react-bootstrap';
+import { Col, Container, Row, Nav, Navbar, NavDropdown, Table, Accordion, Button, ListGroup } from 'react-bootstrap';
 import { useAccordionButton } from 'react-bootstrap/AccordionButton';
 import { Film, FilmLibrary } from './Film.js'
 import './animation.css'
@@ -25,6 +25,8 @@ library.addNewFilm(f3);
 library.addNewFilm(f4);
 library.addNewFilm(f5);
 
+// Adding the list of filter aviable
+const filterList = ["All", "Favorite", "Best Rated", "Seen Last Month", "Unseen"];
 
 function FilmRow(props) {
   const film = props.film;
@@ -55,7 +57,7 @@ function FilmRow(props) {
 
       <td>
         <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked={film.favorite} />
-        <label class="form-check-label" for="flexCheckDefault">
+        <label class="form-check-label px-1" for="flexCheckDefault">
           Favorite
         </label>
       </td>
@@ -72,17 +74,8 @@ function FilmTable(props) {
   )
   return (<Table><tbody>{filmsRow}</tbody></Table>);
 }
-function CustomToggle({ children, eventKey }) {
-  const decoratedOnClick = useAccordionButton(eventKey, () =>
-    console.log('totally custom!'),
-  );
 
-  return (
-    <Button onClick={decoratedOnClick}>{children}</Button>
-  );
-}
-
-function FilmManager(props){
+function FilmManager(props) {
   const [filmList, setFilmList] = useState(props.filmList);
   const filters = props.filters;
 
@@ -93,26 +86,26 @@ function FilmManager(props){
 
     switch (index) {
       case 1:
-        setFilmList(props.filmList.filter((film) =>{
+        setFilmList(props.filmList.filter((film) => {
           console.log(film.favorite);
           return film.favorite;
         }));
         break;
       case 2:
-        setFilmList(props.filmList.filter((film) =>{
+        setFilmList(props.filmList.filter((film) => {
           console.log(film.rating);
           return film.rating === 5;
         }))
         break;
       case 3:
-        setFilmList(props.filmList.filter((film) =>{
+        setFilmList(props.filmList.filter((film) => {
           const today = dayjs(new Date());
-          
+
           return (today.diff(film.watchDate, 'day') < 30)
         }))
         break;
       case 4:
-        setFilmList(props.filmList.filter((film) =>{
+        setFilmList(props.filmList.filter((film) => {
           console.log(film.watchDate);
           return film.watchDate === '';
         }))
@@ -123,12 +116,14 @@ function FilmManager(props){
     }
   }
 
-  
+
   return (
-    < Container fluid>
+    <>
+      <FilmLibraryNavBar filters={filters} filterHandle={filterHandle} />
+      < Container fluid>
         <Row>
           <Col className='col-sm-4 h6 d-none d-sm-block g-0'>
-            <SideBar filters={filters} activedFilter={activedFilter} filterHandle={filterHandle}/>
+            <SideBar filters={filters} activedFilter={activedFilter} filterHandle={filterHandle} />
           </Col>
           <Col className="col-sm-8 col-12 py-2">
             <h2>{filters[activedFilter]}</h2>
@@ -136,6 +131,7 @@ function FilmManager(props){
           </Col>
         </Row>
       </Container>
+    </>
   );
 }
 
@@ -171,61 +167,43 @@ function SideBarElement(props) {
   );
 }
 
-function App() {
+function FilmLibraryNavBar(props) {
+  const filters = props.filters;
+
+  const [hideElem, setHideElem] = useState(true);
   return (
-    <body>
-      <Nav className="bg-primary">
-        <Container fluid>
-          <Row>
-            {/*Questo è hamburger-menu nel caso in cui sia small screen*/}
-            <Col className='text-light d-sm-none g-0'>
-              <Accordion defaultActiveKey="0">
-                <Container fluid>
-
-                  <CustomToggle eventKey="1"><a className="btn btn-primary px-0 text-center" data-bs-toggle="collapse" role="button"
-                    aria-expanded="false" aria-controls="multiCollapseExample1">
-                    <i class="bi bi-list" style={{ fontSize: "32px" }}></i>
-                  </a></CustomToggle>
-
-                  <Accordion.Collapse eventKey="1">
-                    <Container fluid style={{ border: "2px solid red" }}>
-                      <Row>
-                        <Col>
-                          <Container fluid style={{ border: "2px solid red" }} className='list-group-flush my-list py-2'>
-                            <a class="list-group-item list-group-item-action active" aria-current="true">
-                              All
-                            </a>
-                            <a className="list-group-item bg-primary list-group-item-action">Favorite</a>
-                            <a className="list-group-item bg-primary list-group-item-action">Best Rated</a>
-                            <a className="list-group-item bg-primary list-group-item-action">Last Seen</a>
-                            <a className="list-group-item bg-primary list-group-item-action">Seen Last Month</a>
-                          </Container>
-                        </Col>
-                      </Row>
-                    </Container>
-                  </Accordion.Collapse>
-                </Container>
-              </Accordion>
-
-            </Col>
-            <Col className='text-light p-1 py-2'>
-              <a><i class="bi bi-collection-play" style={{ fontSize: "32px" }}></i> FilmLibrary</a>
-            </Col>
-            <Col className="d-none d-sm-block p-1" align="center">
-
-              <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-            </Col>
-            <Col className='text-light d-flex flex-row-reverse p-2' align="center">
-              <i class="bi bi-person-circle" style={{ fontSize: "32px" }}></i>
-            </Col>
-          </Row>
-        </Container>
-      </Nav >
-      {/* Fine NavBar */}
-
-      <FilmManager filmList={library.list} filters={["All", "Favorite", "Best Rated", "Seen Last Month", "Unseen"]} />
-    </body >
+    <Navbar collapseOnSelect onToggle={() => { setHideElem(!hideElem) }} expand="sm" bg="dark" variant="dark">
+      <Container fluid>
+        <Navbar.Brand href="#home"><a><i class="bi bi-collection-play" style={{ fontSize: "32px" }}></i> FilmLibrary</a></Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
+            {filters.map((filter, index) => <Nav.Link href="#all" hidden={hideElem} onClick={() => props.filterHandle(index)}>{filter}</Nav.Link>)}
+            <Nav.Link href="#all">
+              <input className="form-control me-2 justify-content-center " type="search" placeholder="Search" aria-label="Search" />
+            </Nav.Link>
+            {hideElem ?
+              <Nav.Link href="#all" className='position-absolute top-0 end-0'><i class="bi bi-person-circle p-1 " style={{ fontSize: "32px" }}></i>Account</Nav.Link>
+              :
+              <Nav.Link href="#all"><i class="bi bi-person-circle p-1 " style={{ fontSize: "32px" }}></i>Account</Nav.Link>
+            }
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }
 
+function App() {
+  return (
+    <body>
+
+      <FilmManager
+        filmList={library.list}
+        filters={filterList}
+      />
+
+    </body >
+  );
+}
 export default App;
