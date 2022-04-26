@@ -54,7 +54,7 @@ function FilmRow(props) {
 
 
       <td>
-        <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked={film.te} />
+        <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked={film.favorite} />
         <label class="form-check-label" for="flexCheckDefault">
           Favorite
         </label>
@@ -131,7 +131,7 @@ function FilmManager(props){
             <SideBar filters={filters} activedFilter={activedFilter} filterHandle={filterHandle}/>
           </Col>
           <Col className="col-sm-8 col-12 py-2">
-            <h2>All</h2>
+            <h2>{filters[activedFilter]}</h2>
             <FilmTable filmList={filmList} />
           </Col>
         </Row>
