@@ -1,0 +1,14 @@
+/* #customSideBarElem{
+    background-color: rgba(248, 249, 250, 1);
+}
+#customSideBarElem:hover {
+    animation: myname 0.2s linear;
+    animation-fill-mode: forwards;
+}
+
+@keyframes myname {
+    100% {
+        background-color: rgb(13, 110, 253);
+        color: white;
+    }
+} */
