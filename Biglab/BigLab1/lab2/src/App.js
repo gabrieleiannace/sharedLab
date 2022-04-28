@@ -1,7 +1,6 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Col, Container, Row, Nav, Navbar, NavDropdown, Table, Accordion, Button, ListGroup } from 'react-bootstrap';
-import { useAccordionButton } from 'react-bootstrap/AccordionButton';
+import { Col, Container, Row, Nav, Navbar, Alert, Table, Form, Button, ListGroup, Modal } from 'react-bootstrap';
 import { Film, FilmLibrary } from './Film.js'
 import './animation.css'
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -69,49 +68,148 @@ function FilmRow(props) {
 
 function FilmTable(props) {
   const filmList = props.filmList;
-  const filmsRow = filmList.map(
-    film => <FilmRow film={film} key={film.id} />
-  )
-  return (<Table><tbody>{filmsRow}</tbody></Table>);
+
+
+  return (
+    <>
+      <Table>
+        <tbody>{filmList.map(
+          film => <FilmRow film={film} key={film.id} />)}</tbody>
+      </Table>
+      <AddButton addFilm2List={props.addFilm2List} filmList={filmList} />
+    </>
+  );
+}
+
+function AddButton(props) {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const [title, setTitle] = useState('Titolo');
+  const [watchDate, setWatchDate] = useState(dayjs());
+  const [rating, setRating] = useState(0);
+
+  // Error Message: Empty string like '' = there is not an error
+  const [errorMsg, setErrorMsg] = useState('');
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    //  Validation
+    if (title) {
+
+
+      //  Add
+      const newFilm = new Film(1234, title, true, watchDate, rating);
+      props.addFilm2List(newFilm);
+      handleClose()
+    } else {
+      setErrorMsg('Errore: il titolo non può essere vuoto')
+    }
+  }
+
+  return (
+    <>
+      <Button variant="none" className='position-fixed bottom-0 end-0 mx-5 my-5' onClick={handleShow}>
+        <i className="bi bi-plus-circle-fill" style={{ fontSize: "32px" }}></i>
+      </Button>
+
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Aggiungi un nuovo film</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Completa i seguenti campi per aggiungere un film alla libreria:
+          <br />
+          <br />
+          <br />
+          {errorMsg ? <Alert variant='danger' onClose={() => setErrorMsg('')} dismissible>{errorMsg}</Alert> : false}
+          <Form>
+            <Form.Group>
+              <Form.Label>Nome Film</Form.Label>
+              <Form.Control
+                className="text-muted"
+                value={title}
+                onClick={() =>
+                  title === 'Titolo' ? setTitle('') : false}
+                onChange={(ev) => setTitle(ev.target.value)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Data di visulizzazione</Form.Label>
+              <Form.Control className='text-muted' value={watchDate.format('YYYY-MM-DD')} type='date' onChange={ev => setWatchDate(dayjs(ev.target.value))}></Form.Control>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Rating</Form.Label>
+              <Form.Control
+                type='number'
+                className='text-muted'
+                value={rating}
+                onClick={() => setRating('')}
+                onChange={(ev) => setRating(ev.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Chiudi
+          </Button>
+          <Button variant="dark" onClick={handleSubmit}>Salva</Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
 }
 
 function FilmManager(props) {
+  
   const [filmList, setFilmList] = useState(props.filmList);
+  const [showedfilmList, setShowedFilmList] = useState(props.filmList);
   const filters = props.filters;
 
   const [activedFilter, setActivedFilter] = useState(0)
+
+  function addFilm2List(film) {
+    setFilmList((oldList) => oldList.concat(film));
+    setShowedFilmList((oldList) => oldList.concat(film));
+  }
 
   function filterHandle(index) {
     setActivedFilter(index);
 
     switch (index) {
       case 1:
-        setFilmList(props.filmList.filter((film) => {
-          console.log(film.favorite);
+        setShowedFilmList(filmList.filter((film) => {
           return film.favorite;
         }));
         break;
       case 2:
-        setFilmList(props.filmList.filter((film) => {
-          console.log(film.rating);
+        setShowedFilmList(filmList.filter((film) => {
           return film.rating === 5;
         }))
         break;
       case 3:
-        setFilmList(props.filmList.filter((film) => {
+        setShowedFilmList(filmList.filter((film) => {
           const today = dayjs(new Date());
 
           return (today.diff(film.watchDate, 'day') < 30)
         }))
         break;
       case 4:
-        setFilmList(props.filmList.filter((film) => {
-          console.log(film.watchDate);
+        setShowedFilmList(filmList.filter((film) => {
           return film.watchDate === '';
         }))
         break;
       default:
-        setFilmList(props.filmList)
+        setShowedFilmList(filmList)
         break;
     }
   }
@@ -127,7 +225,7 @@ function FilmManager(props) {
           </Col>
           <Col className="col-sm-8 col-12 py-2">
             <h2>{filters[activedFilter]}</h2>
-            <FilmTable filmList={filmList} />
+            <FilmTable filmList={showedfilmList} addFilm2List={addFilm2List}/>
           </Col>
         </Row>
       </Container>
@@ -143,7 +241,7 @@ function SideBar(props) {
       {filters.map((filter, index) =>
         <SideBarElement
           filter={filter}
-          active={index == props.activedFilter}
+          active={index === props.activedFilter}
           key={index}
           filterHandle={props.filterHandle}
           index={index}
@@ -172,25 +270,27 @@ function FilmLibraryNavBar(props) {
 
   const [hideElem, setHideElem] = useState(true);
   return (
-    <Navbar collapseOnSelect onToggle={() => { setHideElem(!hideElem) }} expand="sm" bg="dark" variant="dark">
-      <Container fluid>
-        <Navbar.Brand href="#home"><a><i class="bi bi-collection-play" style={{ fontSize: "32px" }}></i> FilmLibrary</a></Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto">
-            {filters.map((filter, index) => <Nav.Link href="#all" hidden={hideElem} onClick={() => props.filterHandle(index)}>{filter}</Nav.Link>)}
-            <Nav.Link href="#all">
-              <input className="form-control me-2 justify-content-center " type="search" placeholder="Search" aria-label="Search" />
-            </Nav.Link>
-            {hideElem ?
-              <Nav.Link href="#all" className='position-absolute top-0 end-0'><i class="bi bi-person-circle p-1 " style={{ fontSize: "32px" }}></i>Account</Nav.Link>
-              :
-              <Nav.Link href="#all"><i class="bi bi-person-circle p-1 " style={{ fontSize: "32px" }}></i>Account</Nav.Link>
-            }
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+    <>
+      <Navbar collapseOnSelect onToggle={() => { setHideElem(!hideElem) }} expand="sm" bg="dark" variant="dark">
+        <Container fluid>
+          <Navbar.Brand href="#home"><a><i class="bi bi-collection-play" style={{ fontSize: "32px" }}></i> FilmLibrary</a></Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="me-auto">
+              {filters.map((filter, index) => <Nav.Link href="#all" hidden={hideElem} onClick={() => props.filterHandle(index)}>{filter}</Nav.Link>)}
+              <Nav.Link href="#all">
+                <input className="form-control me-2 justify-content-center " type="search" placeholder="Search" aria-label="Search" />
+              </Nav.Link>
+              {hideElem ?
+                <Nav.Link href="#all" className='position-absolute top-0 end-0'><i class="bi bi-person-circle p-1 " style={{ fontSize: "32px" }}></i>Account</Nav.Link>
+                :
+                <Nav.Link href="#all"><i class="bi bi-person-circle p-1 " style={{ fontSize: "32px" }}></i>Account</Nav.Link>
+              }
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    </>
   );
 }
 
