@@ -29,6 +29,7 @@ function App() {
 
   const [active, setActive] = useState('All');
   const films = createFilmsList();
+  const [filmList, setFilmList] = useState(films);
 
   return (
     <>
@@ -36,7 +37,7 @@ function App() {
       <Container fluid>
         <Row>
           <Aside active={active} setActive={setActive}/>
-          <Main films={films} active={active}/>
+          <Main films={filmList} setFilmList={setFilmList} active={active}/>
         </Row>
       </Container>
     </>

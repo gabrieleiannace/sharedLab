@@ -1,17 +1,32 @@
-import { Container, Col, Row, ListGroup, Form } from "react-bootstrap";
+import { Container, Col, Row, ListGroup, Form, Button, Alert } from "react-bootstrap";
+import { useState } from 'react';
 import "./Main.css";
-import { Library } from './FilmsManager.js';
+import { Library, Film } from './FilmsManager.js';
 import dayjs from 'dayjs'
 
 function Main(props) {
+
+    console.log(props);
+    const [showForm, setShowForm] = useState(false);
+    //passare props
+
+    // chiedere al prof
+    // props.films.addNewFilm(new Film(6, "Shrek2", false, dayjs('2022-03-22'), 3));
+
     return (
         <Col className="mt-3">
             <h1>{props.active}</h1>
             <ListGroup variant="flush">
                 {Filter(props.active, props.films.film).map((film) =>
-            <FilmRow film={film} key={film.id} />)}
+                    <FilmRow film={film} key={film.id} />)}
             </ListGroup>
-            <i class="bi bi-plus-circle-fill m-5 text-primary float-end"></i>
+
+            {(!showForm) ? <Button variant="none" className="float-end" onClick={() => setShowForm(true)}>
+                <i class="bi bi-plus-circle-fill"></i></Button> :
+                <AddFilmForm cancel={() => setShowForm(false)} addFilm={addFilm} />}
+
+
+
         </Col>
     );
 }
@@ -49,6 +64,9 @@ function FilmRow(props) {
     );
 }
 
+// Creare il componente delle stelle e passare la props con chiamata a funzione diversa nella visualizzazione a comparsa
+// e quella base
+
 function Filter(active, films) {
     let filteredList = new Library()
     switch (active) {
@@ -70,5 +88,61 @@ function Filter(active, films) {
     }
     return filteredList;
 }
+
+function AddFilmForm(props) {
+
+    const [errorMsg, setErrorMsg] = useState('');  // stringa vuota '' = non c'e' errore
+    const [title, setTitle] = useState('');
+    const [date, setDate] = useState(dayjs());
+    const [checkFavorite, setCheckFavorite] = useState(false);
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    }
+
+    return (
+        <>
+            {errorMsg ? <Alert variant='danger' onClose={() => setErrorMsg('')} dismissible>{errorMsg}</Alert> : false}
+            <Form>
+
+                <Row>
+                    <Col sm={3} className="my-1">
+                        <Form.Label>Title</Form.Label>
+                        <Form.Control value={title} onChange={ev => setTitle(ev.target.value)}></Form.Control>
+                    </Col>
+
+                    <Col sm={3} className="my-1">
+                        <Form.Label>Date</Form.Label>
+                        <Form.Control type='date' value={date.format('YYYY-MM-DD')} onChange={ev => setDate(dayjs(ev.target.value))} />
+                    </Col>
+
+                    <Col xs="auto" className="my-1">
+                        <Form.Check type="checkbox" defaultChecked={checkFavorite} onChange={() => setCheckFavorite(!checkFavorite)} label="Favorite" /> 
+                    </Col>
+
+                    <Form.Group>
+                        <Form.Label>Stars</Form.Label>
+                        <Form.Control type='number' min={18} max={31} value={5} />
+                    </Form.Group>
+                </Row>
+
+
+
+                <Form.Group className="mt-3">
+                    <Button onClick={handleSubmit}>Save</Button>
+                    <Button onClick={props.cancel}>Cancel</Button>
+                </Form.Group>
+
+
+            </Form>
+
+        </>
+    )
+}
+
+function addFilm(exam) {
+
+}
+
 
 export default Main;
