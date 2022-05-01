@@ -12,7 +12,7 @@ const f1 = new Film(1, "Pulp Fiction", true, "2022-03-10", 5);
 const f2 = new Film(2, "21 Grams", true, "2022-03-17", 4);
 const f3 = new Film(3, "Star Wars", false);
 const f4 = new Film(4, "Matrix", false);
-const f5 = new Film(5, "Shrek", false, "2022-03-21", 3);
+const f5 = new Film(5, "Shrek", false, "2022-04-01", 3);
 
 // Creating the film library
 const library = new FilmLibrary();
@@ -32,6 +32,7 @@ function FilmRow(props) {
   const filledStars = [];
   const emptyStars = [];
 
+  const [favorite, setFavorite] = useState(film.favorite);
 
 
   for (let i = 0; i < film.rating; ++i) {
@@ -47,15 +48,25 @@ function FilmRow(props) {
       <td>
         <Button variant="none" className='p-1'><i class="bi bi-pencil-square"></i></Button>
       </td>
-      <td><Button variant="none" className='p-1'><i class="bi bi-trash"></i></Button>
+      <td><Button variant="none" className='p-1'><i class="bi bi-trash" onClick={() => props.deleteFilm2List(film)}></i></Button>
       </td>
-      <td>
-        {film.title}
-      </td>
+      {favorite ?
+        <td className="text-danger"> {film.title}</td> :
+        <td>
+          {film.title}
+        </td>
+      }
 
 
+
       <td>
-        <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked={film.favorite} />
+        <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked={favorite}
+          onChange={(ev) => {
+            setFavorite(ev.target.checked)
+            const newFilm = new Film(film.id, film.title, ev.target.checked, film.watchDate, film.rating)
+            console.log(newFilm);
+            props.updateFilm2List(newFilm);
+          }} />
         <label class="form-check-label px-1" for="flexCheckDefault">
           Favorite
         </label>
@@ -69,12 +80,15 @@ function FilmRow(props) {
 function FilmTable(props) {
   const filmList = props.filmList;
 
-
   return (
     <>
       <Table>
         <tbody>{filmList.map(
-          film => <FilmRow film={film} key={film.id} />)}</tbody>
+          film => <FilmRow
+            film={film} key={film.id}
+            deleteFilm2List={props.deleteFilm2List}
+            updateFilm2List={props.updateFilm2List}
+          />)}</tbody>
       </Table>
       <AddButton addFilm2List={props.addFilm2List} filmList={filmList} />
     </>
@@ -84,11 +98,12 @@ function FilmTable(props) {
 function AddButton(props) {
   const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => { setShow(false); setErrorMsg(''); }
   const handleShow = () => setShow(true);
 
-  const [title, setTitle] = useState('Titolo');
-  const [watchDate, setWatchDate] = useState(dayjs());
+  const [title, setTitle] = useState('');
+  const [favorite, setFavorite] = useState(false);
+  const [watchDate, setWatchDate] = useState(dayjs(new Date()));
   const [rating, setRating] = useState(0);
 
   // Error Message: Empty string like '' = there is not an error
@@ -97,17 +112,24 @@ function AddButton(props) {
   function handleSubmit(event) {
     event.preventDefault();
 
-    //  Validation
-    if (title) {
 
-
-      //  Add
-      const newFilm = new Film(1234, title, true, watchDate, rating);
-      props.addFilm2List(newFilm);
-      handleClose()
-    } else {
+    // Validation: avoid empty title
+    if (!title) {
       setErrorMsg('Errore: il titolo non può essere vuoto')
+      return;
     }
+
+    const today = dayjs(new Date());
+    // Validation: avoid future dates
+    if ((today.diff(dayjs(watchDate)) <= 1)) {
+      setErrorMsg('Errore: i viaggi nel tempo non sono ancora implementati')
+      return;
+    }
+
+    //  Add
+    const newFilm = new Film(1234, title, favorite, watchDate, rating);
+    props.addFilm2List(newFilm);
+    handleClose()
   }
 
   return (
@@ -135,12 +157,25 @@ function AddButton(props) {
             <Form.Group>
               <Form.Label>Nome Film</Form.Label>
               <Form.Control
-                className="text-muted"
-                value={title}
+                placeholder="Titolo"
                 onClick={() =>
                   title === 'Titolo' ? setTitle('') : false}
                 onChange={(ev) => setTitle(ev.target.value)}
               />
+            </Form.Group>
+            <Form.Group>
+
+              <div class="form-check form-switch">
+                <br />
+                <Form.Label>Favorite</Form.Label>
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="flexSwitchCheckDefault"
+                  onClick={(ev) => setFavorite(ev.target.checked)}
+                />
+              </div>
             </Form.Group>
             <Form.Group>
               <Form.Label>Data di visulizzazione</Form.Label>
@@ -150,10 +185,18 @@ function AddButton(props) {
               <Form.Label>Rating</Form.Label>
               <Form.Control
                 type='number'
-                className='text-muted'
+                placeholder='0-5'
                 value={rating}
-                onClick={() => setRating('')}
-                onChange={(ev) => setRating(ev.target.value)}
+                onChange={
+                  (ev) => {
+                    if (ev.target.value > 5)
+                      setRating(5);
+                    else if (ev.target.value < 0)
+                      setRating(0);
+                    else
+                      setRating(ev.target.value);
+                  }
+                }
               />
             </Form.Group>
           </Form>
@@ -170,12 +213,29 @@ function AddButton(props) {
 }
 
 function FilmManager(props) {
-  
+
   const [filmList, setFilmList] = useState(props.filmList);
   const [showedfilmList, setShowedFilmList] = useState(props.filmList);
   const filters = props.filters;
 
   const [activedFilter, setActivedFilter] = useState(0)
+
+  function updateFilm2List(film) {
+    setFilmList(oldList => {
+      return oldList.map((item) => {
+        if (item.id === film.id) {
+          console.log(item + " " + item.id)
+          return film;
+        }
+        return item;
+      })
+    })
+  }
+
+  function deleteFilm2List(film) {
+    setFilmList(() => (filmList.filter((element) => element.id !== film.id)))
+    setShowedFilmList(() => (filmList.filter((element) => element.id !== film.id)));
+  }
 
   function addFilm2List(film) {
     setFilmList((oldList) => oldList.concat(film));
@@ -225,7 +285,12 @@ function FilmManager(props) {
           </Col>
           <Col className="col-sm-8 col-12 py-2">
             <h2>{filters[activedFilter]}</h2>
-            <FilmTable filmList={showedfilmList} addFilm2List={addFilm2List}/>
+            <FilmTable
+              filmList={showedfilmList}
+              addFilm2List={addFilm2List}
+              deleteFilm2List={deleteFilm2List}
+              updateFilm2List={updateFilm2List}
+            />
           </Col>
         </Row>
       </Container>
@@ -302,7 +367,6 @@ function App() {
         filmList={library.list}
         filters={filterList}
       />
-
     </body >
   );
 }
