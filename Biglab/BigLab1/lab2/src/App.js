@@ -1,6 +1,6 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Col, Container, Row, Nav, Navbar, Alert, Table, Form, Button, ListGroup, Modal } from 'react-bootstrap';
+import { Col, Container, Row, Nav,Toast, Navbar, Alert, Table, Form, Button, ListGroup, Modal } from 'react-bootstrap';
 import { Film, FilmLibrary } from './Film.js'
 import './animation.css'
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -27,21 +27,40 @@ library.addNewFilm(f5);
 // Adding the list of filter aviable
 const filterList = ["All", "Favorite", "Best Rated", "Seen Last Month", "Unseen"];
 
+function StarsManager(props){
+  const [rating, setRating] = useState(props.rating);
+
+  return (
+    <>
+    </>
+  );
+}
+
+
 function FilmRow(props) {
   const film = props.film;
+
+  const [rating, setRating] = useState(film.rating);
+
   const filledStars = [];
   const emptyStars = [];
 
   const [favorite, setFavorite] = useState(film.favorite);
 
-
-  for (let i = 0; i < film.rating; ++i) {
-    filledStars.push(<i class="bi bi-star-fill"></i>)
+  function updateRating(rating){
+    setRating(rating);
+    props.updateFilm2List(new Film(film.id, film.title, film.favorite, film.watchDate, rating));
   }
 
-  for (let i = 0; i < 5 - film.rating; ++i) {
-    emptyStars.push(<i class="bi bi-star"></i>)
+  for (let i = 0; i < rating; ++i) {
+    filledStars.push(<i class="bi bi-star-fill" onClick={() => updateRating(i+1)}></i>)
   }
+
+  for (let i = 0; i < 5 - rating; ++i) {
+    emptyStars.push(<i class="bi bi-star" onClick={() => updateRating(rating+1+i)}></i>)
+  }
+
+
   return (
     <tr>
 
@@ -106,21 +125,22 @@ function AddButton(props) {
   const [watchDate, setWatchDate] = useState(dayjs(new Date()));
   const [rating, setRating] = useState(0);
 
-  // Error Message: Empty string like '' = there is not an error
+
+  //  Error Message: Empty string like '' = there is not an error
   const [errorMsg, setErrorMsg] = useState('');
 
   function handleSubmit(event) {
     event.preventDefault();
 
 
-    // Validation: avoid empty title
+    //  Validation: avoid empty title
     if (!title) {
       setErrorMsg('Errore: il titolo non può essere vuoto')
       return;
     }
 
     const today = dayjs(new Date());
-    // Validation: avoid future dates
+    //  Validation: avoid future dates
     if ((today.diff(dayjs(watchDate)) <= 1)) {
       setErrorMsg('Errore: i viaggi nel tempo non sono ancora implementati')
       return;
@@ -158,8 +178,6 @@ function AddButton(props) {
               <Form.Label>Nome Film</Form.Label>
               <Form.Control
                 placeholder="Titolo"
-                onClick={() =>
-                  title === 'Titolo' ? setTitle('') : false}
                 onChange={(ev) => setTitle(ev.target.value)}
               />
             </Form.Group>
@@ -234,12 +252,14 @@ function FilmManager(props) {
 
   function deleteFilm2List(film) {
     setFilmList(() => (filmList.filter((element) => element.id !== film.id)))
-    setShowedFilmList(() => (filmList.filter((element) => element.id !== film.id)));
+    setShowedFilmList(oldList => {
+      return oldList.filter((element) => element.id !== film.id);
+    })
   }
 
   function addFilm2List(film) {
     setFilmList((oldList) => oldList.concat(film));
-    setShowedFilmList((oldList) => oldList.concat(film));
+    filterHandle(activedFilter)
   }
 
   function filterHandle(index) {
