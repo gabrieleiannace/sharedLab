@@ -1,6 +1,6 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Col, Container, Row, Nav,Toast, Navbar, Alert, Table, Form, Button, ListGroup, Modal } from 'react-bootstrap';
+import { Col, Container, Row, Nav, Navbar, Alert, Table, Form, Button, ListGroup, Modal } from 'react-bootstrap';
 import { Film, FilmLibrary } from './Film.js'
 import './animation.css'
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -27,14 +27,6 @@ library.addNewFilm(f5);
 // Adding the list of filter aviable
 const filterList = ["All", "Favorite", "Best Rated", "Seen Last Month", "Unseen"];
 
-function StarsManager(props){
-  const [rating, setRating] = useState(props.rating);
-
-  return (
-    <>
-    </>
-  );
-}
 
 
 function FilmRow(props) {
@@ -47,17 +39,17 @@ function FilmRow(props) {
 
   const [favorite, setFavorite] = useState(film.favorite);
 
-  function updateRating(rating){
+  function updateRating(rating) {
     setRating(rating);
     props.updateFilm2List(new Film(film.id, film.title, film.favorite, film.watchDate, rating));
   }
 
   for (let i = 0; i < rating; ++i) {
-    filledStars.push(<i class="bi bi-star-fill" onClick={() => updateRating(i+1)}></i>)
+    filledStars.push(<i className="bi bi-star-fill" key={i+1} onClick={() => updateRating(i + 1)}></i>)
   }
 
   for (let i = 0; i < 5 - rating; ++i) {
-    emptyStars.push(<i class="bi bi-star" onClick={() => updateRating(rating+1+i)}></i>)
+    emptyStars.push(<i className="bi bi-star" key={rating+1+i} onClick={() => updateRating(rating + 1 + i)}></i>)
   }
 
 
@@ -65,9 +57,9 @@ function FilmRow(props) {
     <tr>
 
       <td>
-        <Button variant="none" className='p-1'><i class="bi bi-pencil-square"></i></Button>
+        <Button variant="none" className='p-1'><i className="bi bi-pencil-square"></i></Button>
       </td>
-      <td><Button variant="none" className='p-1'><i class="bi bi-trash" onClick={() => props.deleteFilm2List(film)}></i></Button>
+      <td><Button variant="none" className='p-1'><i className="bi bi-trash" onClick={() => props.deleteFilm2List(film)}></i></Button>
       </td>
       {favorite ?
         <td className="text-danger"> {film.title}</td> :
@@ -86,7 +78,7 @@ function FilmRow(props) {
             console.log(newFilm);
             props.updateFilm2List(newFilm);
           }} />
-        <label class="form-check-label px-1" for="flexCheckDefault">
+        <label className="form-check-label px-1" htmlFor="flexCheckDefault">
           Favorite
         </label>
       </td>
@@ -147,7 +139,7 @@ function AddButton(props) {
     }
 
     //  Add
-    const newFilm = new Film(1234, title, favorite, watchDate, rating);
+    const newFilm = new Film(0, title, favorite, watchDate, rating);
     props.addFilm2List(newFilm);
     handleClose()
   }
@@ -183,7 +175,7 @@ function AddButton(props) {
             </Form.Group>
             <Form.Group>
 
-              <div class="form-check form-switch">
+              <div className="form-check form-switch">
                 <br />
                 <Form.Label>Favorite</Form.Label>
                 <input
@@ -258,6 +250,16 @@ function FilmManager(props) {
   }
 
   function addFilm2List(film) {
+
+    //  Generate a new key ID
+    let max = 0;
+    for (const element of filmList) {
+      if (element.id > max)
+        max = element.id
+    }
+    //  max + 1 for unique ID
+    film.id = max + 1;
+
     setFilmList((oldList) => oldList.concat(film));
     filterHandle(activedFilter)
   }
@@ -358,18 +360,18 @@ function FilmLibraryNavBar(props) {
     <>
       <Navbar collapseOnSelect onToggle={() => { setHideElem(!hideElem) }} expand="sm" bg="dark" variant="dark">
         <Container fluid>
-          <Navbar.Brand href="#home"><a><i class="bi bi-collection-play" style={{ fontSize: "32px" }}></i> FilmLibrary</a></Navbar.Brand>
+          <Navbar.Brand><a><i className="bi bi-collection-play" style={{ fontSize: "32px" }}></i> FilmLibrary</a></Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
-              {filters.map((filter, index) => <Nav.Link href="#all" hidden={hideElem} onClick={() => props.filterHandle(index)}>{filter}</Nav.Link>)}
-              <Nav.Link href="#all">
+              {filters.map((filter, index) => <Nav.Link hidden={hideElem} key={index} onClick={() => props.filterHandle(index)}>{filter}</Nav.Link>)}
+              <Nav.Link>
                 <input className="form-control me-2 justify-content-center " type="search" placeholder="Search" aria-label="Search" />
               </Nav.Link>
               {hideElem ?
-                <Nav.Link href="#all" className='position-absolute top-0 end-0'><i class="bi bi-person-circle p-1 " style={{ fontSize: "32px" }}></i>Account</Nav.Link>
+                <Nav.Link className='position-absolute top-0 end-0'><i className="bi bi-person-circle p-1 " style={{ fontSize: "32px" }}></i>Account</Nav.Link>
                 :
-                <Nav.Link href="#all"><i class="bi bi-person-circle p-1 " style={{ fontSize: "32px" }}></i>Account</Nav.Link>
+                <Nav.Link><i className="bi bi-person-circle p-1 " style={{ fontSize: "32px" }}></i>Account</Nav.Link>
               }
             </Nav>
           </Navbar.Collapse>
@@ -381,13 +383,13 @@ function FilmLibraryNavBar(props) {
 
 function App() {
   return (
-    <body>
 
-      <FilmManager
-        filmList={library.list}
-        filters={filterList}
-      />
-    </body >
+
+    <FilmManager
+      filmList={library.list}
+      filters={filterList}
+    />
+
   );
 }
 export default App;
