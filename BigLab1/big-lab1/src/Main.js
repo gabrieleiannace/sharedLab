@@ -6,26 +6,28 @@ import dayjs from 'dayjs'
 
 function Main(props) {
 
-    console.log(props);
     const [showForm, setShowForm] = useState(false);
-    //passare props
+    const [filmList, setFilmList] = useState(props.films.film);
 
-    // chiedere al prof
-    // props.films.addNewFilm(new Film(6, "Shrek2", false, dayjs('2022-03-22'), 3));
+    const [idMax, setIdMax] = useState(filmList.length); // da modificare, meglio prendere il massimo
+
+    function addFilm(film) {
+        setFilmList(oldFilms => [...oldFilms, film]);
+        setShowForm(false);
+        setIdMax(idMax + 1);
+    }
 
     return (
         <Col className="mt-3">
             <h1>{props.active}</h1>
             <ListGroup variant="flush">
-                {Filter(props.active, props.films.film).map((film) =>
+                {Filter(props.active, filmList).map((film) =>
                     <FilmRow film={film} key={film.id} />)}
             </ListGroup>
 
             {(!showForm) ? <Button variant="none" className="float-end" onClick={() => setShowForm(true)}>
                 <i class="bi bi-plus-circle-fill"></i></Button> :
-                <AddFilmForm cancel={() => setShowForm(false)} addFilm={addFilm} />}
-
-
+                <AddFilmForm cancel={() => setShowForm(false)} addFilm={addFilm} filmList={filmList} idMax={idMax} />}
 
         </Col>
     );
@@ -49,7 +51,7 @@ function FilmRow(props) {
                             <span style={{ color: props.film.favorite ? 'red' : '' }}>{props.film.title}</span>
                         </Col>
                         <Col xs="3">
-                            {props.film.favorite ? <Form.Check label='Favorite' defaultChecked /> : <Form.Check label='Favorites' />}
+                            {props.film.favorite ? <Form.Check label='Favorite' defaultChecked /> : <Form.Check label='Favorite' />}
                         </Col>
                         <Col xs="3">
                             {props.film.date === "" ? props.date : props.film.date.format('MMMM D, YYYY')}
@@ -64,8 +66,6 @@ function FilmRow(props) {
     );
 }
 
-// Creare il componente delle stelle e passare la props con chiamata a funzione diversa nella visualizzazione a comparsa
-// e quella base
 
 function Filter(active, films) {
     let filteredList = new Library()
@@ -95,9 +95,20 @@ function AddFilmForm(props) {
     const [title, setTitle] = useState('');
     const [date, setDate] = useState(dayjs());
     const [checkFavorite, setCheckFavorite] = useState(false);
+    const [rating, setRating] = useState(0);
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        // validation
+        if (title === '') {
+            setErrorMsg('Il titolo non può essere vuoto');
+        } else if (dayjs().isBefore(date)) {
+            setErrorMsg('La data non può essere futura');
+        } else {
+            const newFilm = new Film(props.idMax + 1, title, checkFavorite, date, rating);
+            props.addFilm(newFilm);
+        }
+
     }
 
     return (
@@ -105,31 +116,30 @@ function AddFilmForm(props) {
             {errorMsg ? <Alert variant='danger' onClose={() => setErrorMsg('')} dismissible>{errorMsg}</Alert> : false}
             <Form>
 
-                <Row>
-                    <Col sm={3} className="my-1">
+                <Row className="me-3">
+                    <Col sm={3}>
                         <Form.Label>Title</Form.Label>
                         <Form.Control value={title} onChange={ev => setTitle(ev.target.value)}></Form.Control>
                     </Col>
 
-                    <Col sm={3} className="my-1">
+                    <Col sm={3}>
                         <Form.Label>Date</Form.Label>
                         <Form.Control type='date' value={date.format('YYYY-MM-DD')} onChange={ev => setDate(dayjs(ev.target.value))} />
                     </Col>
 
-                    <Col xs="auto" className="my-1">
-                        <Form.Check type="checkbox" defaultChecked={checkFavorite} onChange={() => setCheckFavorite(!checkFavorite)} label="Favorite" /> 
+                    <Col sm={2}>
+                        <Form.Label>Favorite</Form.Label>
+                        <Form.Check type="checkbox" defaultChecked={checkFavorite} onChange={() => setCheckFavorite(!checkFavorite)} />
                     </Col>
 
-                    <Form.Group>
+                    <Col sm={4}>
                         <Form.Label>Stars</Form.Label>
-                        <Form.Control type='number' min={18} max={31} value={5} />
-                    </Form.Group>
+                        <Form.Control type='number' onChange={ev => { setRating(ev.target.value) }} />
+                    </Col>
                 </Row>
 
-
-
                 <Form.Group className="mt-3">
-                    <Button onClick={handleSubmit}>Save</Button>
+                    <Button onClick={handleSubmit} className="me-2">Save</Button>
                     <Button onClick={props.cancel}>Cancel</Button>
                 </Form.Group>
 
@@ -139,10 +149,5 @@ function AddFilmForm(props) {
         </>
     )
 }
-
-function addFilm(exam) {
-
-}
-
 
 export default Main;
