@@ -16,3 +16,8 @@
     margin: 0.1em;
     font-size: .9em;
 }
+
+.bi-star-fill:hover, .bi-star:hover, .bi-trash:hover{
+    opacity: .7;
+    cursor: pointer;
+}

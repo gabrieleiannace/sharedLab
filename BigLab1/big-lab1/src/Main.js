@@ -17,12 +17,25 @@ function Main(props) {
         setIdMax(idMax + 1);
     }
 
+    function updateList(film) {
+        setFilmList(oldList => {
+            return oldList.map((e) => {
+                if (e.id === film.id) return film;
+                else return e;
+            })
+        })
+    }
+
+    function deleteFilm(film) {
+        setFilmList(() => (filmList.filter((e) => e.id !== film.id)))
+    }
+
     return (
         <Col className="mt-3">
             <h1>{props.active}</h1>
             <ListGroup variant="flush">
                 {Filter(props.active, filmList).map((film) =>
-                    <FilmRow film={film} key={film.id} />)}
+                    <FilmRow film={film} key={film.id} updateList={updateList} deleteFilm={deleteFilm} />)}
             </ListGroup>
 
             {(!showForm) ? <Button variant="none" className="float-end" onClick={() => setShowForm(true)}>
@@ -32,40 +45,6 @@ function Main(props) {
         </Col>
     );
 }
-
-function FilmRow(props) {
-    const stars = [];
-    for (let i = 0; i < 5; i++) {
-        if (i < props.film.rating) stars.push(<i class="bi bi-star-fill"></i>)
-        else stars.push(<i class="bi bi-star"></i>)
-    }
-
-    return (
-        <>
-            <ListGroup.Item>
-                <Container fluid>
-                    <Row>
-                        <Col xs="4">
-                            <i class="bi bi-pencil-square"></i>
-                            <i class="bi bi-trash"></i>
-                            <span style={{ color: props.film.favorite ? 'red' : '' }}>{props.film.title}</span>
-                        </Col>
-                        <Col xs="3">
-                            {props.film.favorite ? <Form.Check label='Favorite' defaultChecked /> : <Form.Check label='Favorite' />}
-                        </Col>
-                        <Col xs="3">
-                            {props.film.date === "" ? props.date : props.film.date.format('MMMM D, YYYY')}
-                        </Col>
-                        <Col xs="2">
-                            {stars}
-                        </Col>
-                    </Row>
-                </Container>
-            </ListGroup.Item>
-        </>
-    );
-}
-
 
 function Filter(active, films) {
     let filteredList = new Library()
@@ -87,6 +66,44 @@ function Filter(active, films) {
             break;
     }
     return filteredList;
+}
+
+function FilmRow(props) {
+
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+        if (i < props.film.rating) stars.push(<i class="bi bi-star-fill" key={i + 1} onClick={() => updateRating(i + 1)}></i>)
+        else stars.push(<i class="bi bi-star" key={i + 1} onClick={() => updateRating(i + 1)}></i>)
+    }
+
+    function updateRating(rating) {
+        props.updateList(new Film(props.film.id, props.film.title, props.film.favorite, props.film.date, rating));
+    }
+
+    return (
+        <>
+            <ListGroup.Item>
+                <Container fluid>
+                    <Row>
+                        <Col xs="4">
+                            <i class="bi bi-pencil-square"></i>
+                            <i class="bi bi-trash" onClick={() => props.deleteFilm(props.film)}></i>
+                            <span style={{ color: props.film.favorite ? 'red' : '' }}>{props.film.title}</span>
+                        </Col>
+                        <Col xs="3">
+                            {props.film.favorite ? <Form.Check label='Favorite' defaultChecked /> : <Form.Check label='Favorite' />}
+                        </Col>
+                        <Col xs="3">
+                            {props.film.date === "" ? props.date : props.film.date.format('MMMM D, YYYY')}
+                        </Col>
+                        <Col xs="2">
+                            {stars}
+                        </Col>
+                    </Row>
+                </Container>
+            </ListGroup.Item>
+        </>
+    );
 }
 
 function AddFilmForm(props) {
