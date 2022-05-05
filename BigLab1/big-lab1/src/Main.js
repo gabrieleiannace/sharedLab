@@ -80,6 +80,10 @@ function FilmRow(props) {
         props.updateList(new Film(props.film.id, props.film.title, props.film.favorite, props.film.date, rating));
     }
 
+    function updateFavorite(favorite){
+        props.updateList(new Film(props.film.id, props.film.title, favorite, props.film.date, props.film.rating));
+    }
+
     return (
         <>
             <ListGroup.Item>
@@ -91,7 +95,9 @@ function FilmRow(props) {
                             <span style={{ color: props.film.favorite ? 'red' : '' }}>{props.film.title}</span>
                         </Col>
                         <Col xs="3">
-                            {props.film.favorite ? <Form.Check label='Favorite' defaultChecked /> : <Form.Check label='Favorite' />}
+                            {props.film.favorite ? <Form.Check label='Favorite' defaultChecked
+                            onChange={(e) => {updateFavorite(false)}}/> : <Form.Check label='Favorite'
+                            onChange={(e) => {updateFavorite(true)}}/>}
                         </Col>
                         <Col xs="3">
                             {props.film.date === "" ? props.date : props.film.date.format('MMMM D, YYYY')}
