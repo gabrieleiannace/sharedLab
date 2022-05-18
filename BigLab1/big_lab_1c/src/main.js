@@ -1,7 +1,10 @@
-import { Card, Table, Container, Form } from 'react-bootstrap';
+import { Card, Table, Container, Form, Button } from 'react-bootstrap';
 import { useState } from 'react'
 import { FilmLibrary } from './StructureFilm';
 import dayjs from 'dayjs'
+import { BsFillPlusCircleFill } from "react-icons/bs";
+import MyForm from './form';
+
 
 function MyMain(props) {
     const [filmList, setFilmList] = useState(props.films.film)
@@ -13,30 +16,40 @@ function MyMain(props) {
                 </Card.Title>
                 <FilmTable films={filmList} active={props.active} setFilmList={setFilmList} />
 
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#0d6efd"
-                    className="bi bi-plus-circle-fill float-end" viewBox="0 0 16 16">
-                    <path
-                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
-                </svg>
             </Container>
         </>
     )
 }
 
 function FilmTable(props) {
+    const [showForm, setShowForm] = useState(false);
 
+    function addFilm(film) {
+        props.setFilmList(oldFilm => [...oldFilm, film])
+        setShowForm(false);
+
+    }
 
     return (
-        <Table hover >
-            <tbody>
-                {
-                    ApplyFilter(props.active, props.films).map((film) => <FilmRow films={film} setFilmList={props.setFilmList} key={film.id} />)
+        <>
+            <Table hover >
+                <tbody>
+                    {
+                        ApplyFilter(props.active, props.films).map((film) => <FilmRow films={film} setFilmList={props.setFilmList} key={film.id} />)
 
 
-                }
-            </tbody>
+                    }
+                </tbody>
+            </Table>
 
-        </Table>
+
+            {(!showForm) ? <Button variant='none' className='text-primary position-absolute end-0 pe-4' onClick={() => setShowForm(true)}  >
+                <BsFillPlusCircleFill style={{ fontSize: "40px" }} className='text-primary  '>
+                </BsFillPlusCircleFill>
+            </Button> :
+                <MyForm cancel={() => setShowForm(false)} addFilm={addFilm} />}
+
+        </>
     );
 }
 
@@ -128,6 +141,7 @@ function Rating(props) {
                 </th>
             )
     }
+
 }
 
 function Title(props) {
